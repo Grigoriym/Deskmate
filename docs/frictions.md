@@ -18,5 +18,3 @@ entries get deleted — see /finalize.
   `failFast = true` (`build-logic/.../Quality.kt`), so the run stops at the first failure. One
   mutation per run.
 - 2026-09-26 — `adb -s <serial> logcat` after the phone disconnected: adb printed "waiting for device" and blocked until the 120 s timeout. Check `adb devices` first, or use `adb wait-for-device` with a `timeout`.
-- 2026-09-26 — `adb shell cmd jobscheduler run -f <pkg> <id>` for a WorkManager job: "Could not find job". WorkManager's jobs live in the `androidx.work.systemjobscheduler` namespace; add `-n androidx.work.systemjobscheduler`.
-- 2026-09-26 — Forcing a WorkManager periodic job with `cmd jobscheduler run -f` did not run the worker: WorkManager logged "Delaying execution … because it is being executed before schedule" and re-enqueued it. Waited for the natural first run instead.
