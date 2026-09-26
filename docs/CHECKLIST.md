@@ -1,6 +1,6 @@
 # Deskmate checklist
 
-**Current step:** M2.2 — M2.1 (saved host store) done 2026-09-26.
+**Current step:** M2.3 — M2.2 (NSD finder) done 2026-09-26.
 
 ## How to use this
 
@@ -72,7 +72,7 @@ Shared context for all of M2 (re-verify, don't re-derive):
   yet; that is M2.4. DataStore allows one active instance per file, so the "new instance" test
   cancels the first store's scope before it opens the second.
 
-- [ ] **M2.2** — NSD finder: an interface in `commonMain` (one call: "find the display, or
+- [x] **M2.2** — NSD finder: an interface in `commonMain` (one call: "find the display, or
   `null` after a timeout"), the `NsdManager` implementation in `androidMain`. Discover
   `_http._tcp.`, match the service name `Desk display`, resolve it, return
   `http://<host>:<port>`. Always stop discovery, on success, timeout and cancellation.
@@ -83,6 +83,14 @@ Shared context for all of M2 (re-verify, don't re-derive):
   and `ACCESS_NETWORK_STATE`). Record the answer, with a source link, in the step's Note.
   **Verify:** the code compiles and `./gradlew build` is green. No unit test for `NsdManager`
   itself (see CLAUDE.md "Don't break production in favor of tests"); the real check is M2.4.
+  Note: `DisplayFinder` (commonMain) and `NsdDisplayFinder` (androidMain, 5 s timeout, IPv4
+  only). One resolve path: the deprecated `resolveService` on all API levels, because the
+  API 34 replacement would still need it for API 24-33. **Permission answer: yes.** At
+  targetSdk 37, on Android 17+, NSD and any TCP to a LAN address need the runtime permission
+  `ACCESS_LOCAL_NETWORK` (group `NEARBY_DEVICES`). Without it, TCP typically times out. On
+  Android 16 and lower, `INTERNET` grants it implicitly. Source:
+  https://developer.android.com/privacy-and-security/local-network-permission . Not added in
+  this step; see the M2.2 entry in `docs/revisit.md`, which M2.4 must handle.
 
 - [ ] **M2.3** — `HostLocator` in `commonMain`: runs the search order above and exposes the
   state (searching / found host / not found) as a `StateFlow`. Also `setManual(ip)` (probe,
