@@ -1,6 +1,6 @@
 # Deskmate checklist
 
-**Current step:** M1.1 — M0 done 2026-09-26 and archived in `docs/CHECKLIST_ARCHIVE.md`.
+**Current step:** M1.2 — M1.1 done 2026-09-26 (status DTOs, fixture tests).
 
 ## How to use this
 
@@ -34,11 +34,22 @@ Ground rules (the *why* is in `docs/IMPLEMENTATION_PLAN.md`):
 
 ## M1 — API client (`core:api`)
 
-- [ ] **M1.1** — DTOs for `/api/status`, mirroring API.md field-for-field; every section
+- [x] **M1.1** — DTOs for `/api/status`, mirroring API.md field-for-field; every section
   nullable; `ignoreUnknownKeys`. Copy `status.example.json` into test resources, with a comment
   naming its source path and the `esp32-desk-display` commit it came from.
+  **Note:** the fixture is a Kotlin raw string (`core/api/src/commonTest/.../StatusExampleJson.kt`),
+  not a `.json` resource file. Reading a file from `commonTest` needs a JVM-only API, and plan §4
+  keeps `core:api` common. JSON also can't hold the source comment. The string is byte-identical
+  to the upstream file at esp32-desk-display `cf9740c` (checked with `diff`).
+  **Note:** sections are nullable but have no default: API.md says the key is always sent, as
+  `null` when there is no data. Only `warning`'s fields after `count` default to `null`, because
+  they are absent when `count` is 0 (a fourth test covers that). Values stay raw strings
+  (`screen`, `severity`, times); typing them is domain work. `DeskJson` holds the one `Json`
+  config. `core:api`'s `Placeholder` is deleted.
   **Verify:** a test decodes the fixture and asserts every field; a second test decodes it
-  with every section set to `null`; a third decodes it with an extra unknown field.
+  with every section set to `null`; a third decodes it with an extra unknown field. Confirmed:
+  `StatusDtoTest` 4/4 green, `./gradlew build` green. Negative check: with
+  `ignoreUnknownKeys = false` only the unknown-field test failed, then the setting was restored.
 
 - [ ] **M1.2** — `DeskApi`: `status()`, `screen(go)`, `panel(set)` with typed values (no raw
   strings at call sites). 3-5 s timeouts, requests serialised (one at a time), results as a
