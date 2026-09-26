@@ -65,8 +65,9 @@ backends/features and would be empty structure here.
 | `strings` | CMP string resources | |
 
 From `grappim-kit` (check `CONSUMING.md` per module when added): `logger`, `coroutines`,
-`uikit`, `testing`, `storage` (for the saved host — verify it fits first), and `navigation`
-only if a second screen (settings/manual IP) is added.
+`uikit`, `testing`, and `navigation` only if a second screen (settings/manual IP) is added.
+`storage` does not fit the saved host (checked 2026-09-26, kit `0.1.7`: no key-value store);
+`core:discovery` keeps its own small DataStore store instead.
 
 Deferred until needed: desktop/JVM target (possible later — `core:api` and the domain stay
 in `commonMain` so it stays cheap), iOS, `benchmark`, `detekt-rules`.
