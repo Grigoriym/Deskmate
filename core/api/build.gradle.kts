@@ -10,5 +10,8 @@ kotlin {
         commonMain.dependencies {
             implementation(libs.grappim.kit.coroutines)
         }
+        commonTest.dependencies {
+            implementation(libs.ktor.client.mock)
+        }
     }
 }
