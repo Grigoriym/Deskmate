@@ -30,10 +30,8 @@ cold session can act on it. Delete an entry when it's fixed.
   `POST /api/panel?set=toggle` returned `{"ok":true}` but `panel_on` stayed `true` 1.5 s later.
   Cause not confirmed: someone at the knob, or knob noise / a firmware issue. If it happens
   again with nobody at the knob, report it in `../esp32-desk-display`, not here.
-- 2026-09-26 (M2.2) — targetSdk 37 needs `ACCESS_LOCAL_NETWORK` on Android 17+ devices for
-  NSD and for LAN HTTP; the manifest (`androidApp/src/main/AndroidManifest.xml`) has only
-  `INTERNET` and `ACCESS_NETWORK_STATE`. It is a runtime permission (group `NEARBY_DEVICES`),
-  so M2.4 needs the manifest entry plus a runtime request before discovery, or the phone test
-  on Android 17 fails with timeouts. Alternative: `DiscoveryRequest.FLAG_SHOW_PICKER` (system
-  picker, no permission) — but it is API 37 only and adds a user tap. Source:
+- 2026-09-26 (M2.4) — The `ACCESS_LOCAL_NETWORK` runtime request
+  (`androidApp/src/main/kotlin/com/grappim/deskmate/MainActivity.kt`, API 37+ only) has not run
+  on a real Android 17 device; the M2.4 phone is API 35. Test it on an Android 17 device or
+  emulator: allow → found; deny → "Display not found", no crash. Source:
   https://developer.android.com/privacy-and-security/local-network-permission

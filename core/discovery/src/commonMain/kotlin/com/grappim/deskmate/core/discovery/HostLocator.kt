@@ -1,5 +1,6 @@
 package com.grappim.deskmate.core.discovery
 
+import com.grappim.kit.logger.logcat
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -36,6 +37,7 @@ class HostLocator(private val store: SavedHostStore, private val finder: Display
         val host = "http://${ip.trim()}"
         if (!probe.isDisplay(host)) return@withLock false
         store.save(host)
+        logcat { "Found $host via manual IP" }
         _state.value = HostState.Found(host)
         true
     }
@@ -44,19 +46,22 @@ class HostLocator(private val store: SavedHostStore, private val finder: Display
         _state.value = HostState.Searching
         val saved = if (trySaved) store.read() else null
         // Each candidate is computed only when the one before it failed: NSD takes seconds.
-        val candidates = listOf<suspend () -> String?>(
-            { saved },
-            { finder.find() },
-            { MDNS_HOST }
+        val candidates = listOf<Pair<String, suspend () -> String?>>(
+            "saved host" to { saved },
+            "NSD" to { finder.find() },
+            "desk.local" to { MDNS_HOST }
         )
-        for (candidate in candidates) {
+        for ((path, candidate) in candidates) {
             val host = candidate() ?: continue
             if (probe.isDisplay(host)) {
                 store.save(host)
+                logcat { "Found $host via $path" }
                 _state.value = HostState.Found(host)
                 return@withLock
             }
+            logcat { "No display at $host ($path)" }
         }
+        logcat { "Display not found" }
         _state.value = HostState.NotFound
     }
 }

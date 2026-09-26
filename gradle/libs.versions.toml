@@ -58,6 +58,8 @@ jetbrainsComposeIcons = "1.7.3"
 jetbrainsAndroidxLifecycle = "2.11.0"
 # https://developer.android.com/guide/navigation/navigation-3
 jetbrainsNav3 = "1.1.1"
+# https://github.com/JakeWharton/timber/releases
+timber = "5.0.1"
 # https://github.com/Grigoriym/grappim-kit — one shared VERSION_NAME for every wired module
 grappimKit = "0.1.7"
 
@@ -83,6 +85,8 @@ grappim-kit-logger = { module = "io.github.grigoriym:grappim-kit-logger", versio
 grappim-kit-coroutines = { module = "io.github.grigoriym:grappim-kit-coroutines", version.ref = "grappimKit" }
 grappim-kit-uikit = { module = "io.github.grigoriym:grappim-kit-uikit", version.ref = "grappimKit" }
 grappim-kit-testing = { module = "io.github.grigoriym:grappim-kit-testing", version.ref = "grappimKit" }
+
+timber = { module = "com.jakewharton.timber:timber", version.ref = "timber" }
 
 kotlinx-serialization-json = { group = "org.jetbrains.kotlinx", name = "kotlinx-serialization-json", version.ref = "kotlin-serialization-json" }
 kotlinx-coroutines-core = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-core", version.ref = "coroutines" }

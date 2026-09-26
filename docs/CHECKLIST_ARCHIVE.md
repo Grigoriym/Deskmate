@@ -152,3 +152,102 @@ Finished milestones, moved here verbatim from `docs/CHECKLIST.md`.
   visibly flips the panel; the user confirms. Confirmed: `status()` decoded every section
   (`bvg` was `null`); `panel(Toggle)` flipped `panel_on` `true → false`, and the user saw
   the panel go dark. The panel was turned back on afterwards.
+
+## M2 — discovery (`core:discovery`)
+
+Find the display and give `DeskApi` its `baseUrl`. Broken down 2026-09-26.
+
+Shared context for all of M2 (re-verify, don't re-derive):
+
+- **Contract:** API.md "Finding the display". NSD service type `_http._tcp.`, filter by
+  service name `Desk display`, then resolve to host + port. Fallback `desk.local`, then a
+  manual IP. Re-read that section at the start of each step.
+- **Search order:** saved host → NSD → `desk.local` → not found. A candidate counts as found
+  only when `GET /api/status` on it returns `DeskResult.Success` (the "probe"). The first
+  candidate that passes is saved as the last good host.
+- **`grappim-kit-storage` does not fit** (checked 2026-09-26, kit `0.1.7`). It holds
+  `NetworkMonitor`, `SecretCipher` and `TrustedCertStorage`, and no general key-value store.
+  So the saved host is a small local store over DataStore Preferences, the same shape as
+  `../wallosmobile/core/storage` (`ServerUrlStorageImpl`, and `StorageModule` for the
+  `Context`-based file path).
+- **Everything that decides is in `commonMain` and tested with hand-written fakes.** Only
+  the NSD code is `androidMain`, behind an interface.
+- **Manual IP:** M2 gives the API (probe, then save). The input field is M3's UI (the
+  not-found state), because M2 adds no screen.
+- **Offline → re-discover:** M2 gives a `rediscover()` call. M3's poll loop calls it when the
+  saved host goes offline.
+- **The emulator can't see the home LAN's mDNS.** Any step that needs the real display runs on
+  the user's phone on the home WiFi, or on the dev machine as M1.3 did.
+
+- [x] **M2.1** — Saved host store in `core:discovery`: read, save and clear one host string
+  (for example `http://192.168.0.147`, the form `DeskApi.baseUrl` takes). DataStore Preferences
+  in `commonMain`; the Android file path and Koin provider in `androidMain`, as wallosmobile's
+  `StorageModule` does. Catalog: DataStore under one version key; take the current version,
+  not wallosmobile's pin without a check. `core:discovery` then no longer needs its
+  `Placeholder`.
+  **Verify:** `commonTest` against a DataStore on a temp file: empty store reads `null`; a saved
+  host reads back; it survives a new store instance on the same file; `clear()` empties it.
+  `./gradlew build` green.
+  Note: DataStore `1.2.1` is the newest stable (1.3.0 is alpha). `SavedHostStore` +
+  `DiscoveryModule` (androidMain) exist, but `composeApp` does not include `DiscoveryModule`
+  yet; that is M2.4. DataStore allows one active instance per file, so the "new instance" test
+  cancels the first store's scope before it opens the second.
+
+- [x] **M2.2** — NSD finder: an interface in `commonMain` (one call: "find the display, or
+  `null` after a timeout"), the `NsdManager` implementation in `androidMain`. Discover
+  `_http._tcp.`, match the service name `Desk display`, resolve it, return
+  `http://<host>:<port>`. Always stop discovery, on success, timeout and cancellation.
+  minSdk is 24: `resolveService` is deprecated from API 34 but still works; choose one path
+  and say why in a comment.
+  **Check first:** targetSdk is 37. Find out whether Android's local-network protection needs a
+  permission for NSD or for LAN HTTP at this targetSdk (the M0.2 manifest has only `INTERNET`
+  and `ACCESS_NETWORK_STATE`). Record the answer, with a source link, in the step's Note.
+  **Verify:** the code compiles and `./gradlew build` is green. No unit test for `NsdManager`
+  itself (see CLAUDE.md "Don't break production in favor of tests"); the real check is M2.4.
+  Note: `DisplayFinder` (commonMain) and `NsdDisplayFinder` (androidMain, 5 s timeout, IPv4
+  only). One resolve path: the deprecated `resolveService` on all API levels, because the
+  API 34 replacement would still need it for API 24-33. **Permission answer: yes.** At
+  targetSdk 37, on Android 17+, NSD and any TCP to a LAN address need the runtime permission
+  `ACCESS_LOCAL_NETWORK` (group `NEARBY_DEVICES`). Without it, TCP typically times out. On
+  Android 16 and lower, `INTERNET` grants it implicitly. Source:
+  https://developer.android.com/privacy-and-security/local-network-permission . Not added in
+  this step; see the M2.2 entry in `docs/revisit.md`, which M2.4 must handle.
+
+- [x] **M2.3** — `HostLocator` in `commonMain`: runs the search order above and exposes the
+  state (searching / found host / not found) as a `StateFlow`. Also `setManual(ip)` (probe,
+  then save; an unreachable IP is not saved) and `rediscover()` (skip the saved host, search
+  again). The probe uses `DeskApi.status()`; decide in the step whether `core:discovery`
+  depends on `core:api` or takes the probe as a function, and note why.
+  **Verify:** tests with fakes for the store, the NSD finder and the probe: saved host up →
+  found without NSD; saved host down → NSD finds a new IP → the store holds the new IP; NSD
+  finds nothing → `desk.local` is tried; nothing passes → not found and the store is not
+  cleared; manual IP unreachable → not saved. `./gradlew build` green.
+  Note: the probe is a `HostProbe` interface in `core:discovery`, not a `core:api` dependency.
+  `HostLocator` probes a different host on each call, but `DeskApi` is built around one
+  `baseUrl` and one engine. **M2.4 must implement `HostProbe`** (with `DeskApi`) and bind it;
+  without it, `KoinGraphTest` fails once `DiscoveryModule` is in the graph. Nothing searches
+  until a caller runs `locate()`; the start state is `Searching`. `setManual` takes an address
+  without a scheme and adds `http://`. On a failed `setManual`, the state does not change.
+
+- [x] **M2.4** — Wiring: Koin provides `HostLocator`, and `DeskApi` with `baseUrl` from the
+  found host. `KoinGraphTest` gets `Context` in `extraTypes`. The placeholder screen shows the
+  locator state and, when found, the status `time` (the M0.4 greeting goes). This is a
+  temporary proof, replaced by M3's screen.
+  **Verify:** on the user's phone on the home WiFi: first launch shows the display found via NSD
+  (logcat names the path that won), then the status time. Put a wrong IP in the store (for
+  example with a debug `adb` command); the next launch falls back to NSD and saves the right
+  IP. `KoinGraphTest` passes; `./gradlew build` green.
+  Note: phone Samsung SM-G998B, Android 15 (API 35), 2026-09-26. First launch: logcat
+  `HostLocator: Found http://192.168.0.147:80 via NSD`, then the screen showed `Time: 18:57`.
+  With `http://192.168.0.99` written into the DataStore file (`run-as`), the next launch logged
+  `No display at http://192.168.0.99 (saved host)`, then found `.147` via NSD and saved it.
+  Wiring: `ApiModule` (core:api androidMain) gives one OkHttp `HttpClientEngine`;
+  `DeskHostProbe` (composeApp) implements `HostProbe` with one `DeskApi` whose `baseUrl` is the
+  host under test; `AppModule.provideDeskApi` reads the locator state on every call and **throws
+  `IllegalStateException` when the state is not `Found`**. M3's poll loop must not call
+  `DeskApi` during a `rediscover()`. `MainActivity` asks for `ACCESS_LOCAL_NETWORK` on API 37+,
+  then runs `locate()`; the phone is API 35, so that path is untested (see `docs/revisit.md`).
+  **Check widened:** `KoinGraphTest` `extraTypes` gained `Function0` (a false positive, the
+  `DeskApi` constructor's `baseUrl` lambda). The test does not see provider-function parameters:
+  it still passes with `DiscoveryModule` removed from `includes`. Logging: `TimberLogger` +
+  debug `Timber.DebugTree` in `DeskmateApp` (Timber `5.0.1` added to the catalog).

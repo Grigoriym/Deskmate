@@ -16,10 +16,16 @@ android {
 
 dependencies {
     implementation(project(":composeApp"))
+    // `MainActivity` starts the search once the local network permission is answered.
+    implementation(project(":core:discovery"))
 
     implementation(platform(libs.koin.bom))
     implementation(libs.koin.android)
     implementation(libs.koin.annotations)
+
+    // `TimberLogger` backs every `logcat { }`; Timber itself plants the logcat tree.
+    implementation(libs.grappim.kit.logger)
+    implementation(libs.timber)
 
     implementation(libs.androidx.activity.compose)
     implementation(libs.jetbrains.compose.ui.tooling.preview)

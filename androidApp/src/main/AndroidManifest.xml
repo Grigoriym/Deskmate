@@ -3,6 +3,8 @@
 
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+    <!-- Android 17+: NSD and HTTP to a LAN address. Asked at runtime in MainActivity. -->
+    <uses-permission android:name="android.permission.ACCESS_LOCAL_NETWORK" />
 
     <!-- Cleartext for any host: the display is plain HTTP on a DHCP-assigned LAN IP. -->
     <application
