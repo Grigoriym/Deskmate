@@ -78,6 +78,8 @@ jetbrains-navigation3-ui = { module = "org.jetbrains.androidx.navigation3:naviga
 jetbrains-androidx-savedstate = { module = "org.jetbrains.androidx.savedstate:savedstate", version.ref = "jetbrainsSavedState" }
 
 grappim-kit-logger = { module = "io.github.grigoriym:grappim-kit-logger", version.ref = "grappimKit" }
+grappim-kit-coroutines = { module = "io.github.grigoriym:grappim-kit-coroutines", version.ref = "grappimKit" }
+grappim-kit-uikit = { module = "io.github.grigoriym:grappim-kit-uikit", version.ref = "grappimKit" }
 grappim-kit-testing = { module = "io.github.grigoriym:grappim-kit-testing", version.ref = "grappimKit" }
 
 kotlinx-serialization-json = { group = "org.jetbrains.kotlinx", name = "kotlinx-serialization-json", version.ref = "kotlin-serialization-json" }

@@ -35,3 +35,6 @@ plugins {
 }
 
 include(":androidApp", ":composeApp")
+include(":core:api", ":core:discovery")
+include(":feature:display:domain", ":feature:display:ui")
+include(":widget", ":strings")

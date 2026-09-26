@@ -1,6 +1,6 @@
 # Deskmate checklist
 
-**Current step:** M0.3 — M0.2 done 2026-09-26 (`androidApp` + `composeApp` skeletons, placeholder screen).
+**Current step:** M0.4 — M0.3 done 2026-09-26 (six empty module skeletons, kit `coroutines` + `uikit` added).
 
 ## How to use this
 
@@ -74,12 +74,22 @@ Ground rules (the *why* is in `docs/IMPLEMENTATION_PLAN.md`):
   dump`), both permissions granted, `usesCleartextTraffic=true` in the APK manifest.
   `ktlintCheck` and `detekt` green.
 
-- [ ] **M0.3** — Empty module skeletons from IMPLEMENTATION_PLAN.md §4 (`core:api`,
+- [x] **M0.3** — Empty module skeletons from IMPLEMENTATION_PLAN.md §4 (`core:api`,
   `core:discovery`, `feature:display:domain`, `feature:display:ui`, `widget`, `strings`), each
   applying its convention plugins. Add `grappim-kit` `logger`, `coroutines`, `uikit`,
   `testing` under one `grappimKit` version key (current `VERSION_NAME` in
   `grappim-kit/gradle.properties`, only if published — check the latest `publish.yml` run).
-  **Verify:** `./gradlew build` green.
+  **Note:** `VERSION_NAME` is still `0.1.7`; all four artifacts return 200 on Maven Central.
+  Each module has one `internal object Placeholder` (a `package`-only file trips detekt's
+  `EmptyKotlinFile`, as wayprint found). Plugins: `core:api` library + serialization + network
+  + di; `core:discovery` library + di; `feature:display:domain` library + stability;
+  `feature:display:ui` library + compose + di; `strings` library + compose; `widget` library
+  only (Glance comes in M4).
+  **Note:** the two new kit modules are wired, not just listed, so the build proves they
+  resolve: `coroutines` in `core:api` (dispatchers for `DeskApi`, M1.2), `uikit` in
+  `feature:display:ui`.
+  **Verify:** `./gradlew build` green. Confirmed (all six modules ran detekt, ktlint, kover);
+  `grappim-kit-coroutines:0.1.7` and `grappim-kit-uikit:0.1.7` are on the compile classpaths.
 
 - [ ] **M0.4** — Koin skeleton: `AppModule`, one injected dependency visible on the
   placeholder screen (proves the graph).
