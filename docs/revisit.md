@@ -32,4 +32,5 @@ cold session can act on it. Delete an entry when it's fixed.
   run them on a real display: unplug the display → stale mark within ~10 s, one `rediscover()`
   (logcat tag `HostLocator`), fresh data after replug without an app restart; and app in the
   background → no polls in logcat. Only `DisplayViewModel`'s `commonTest` covers them. The Verify
-  line is in `docs/CHECKLIST_ARCHIVE.md` M3.6. A natural time: M4's real-device check.
+  line is in `docs/CHECKLIST_ARCHIVE.md` M3.6. M4.6 was closed without running them
+  (user, 2026-09-26), so they are still open.
