@@ -1,6 +1,6 @@
 # Deskmate checklist
 
-**Current step:** M4.2 — M4.1 (empty widget) done 2026-09-26.
+**Current step:** M4.3 — M4.2 (widget snapshot and store) done 2026-09-26.
 
 ## How to use this
 
@@ -76,7 +76,7 @@ Shared context for all of M4 (re-verify, don't re-derive):
   `widget/src/androidMain/`, and the receiver merges into the app's manifest. The provider has
   `updatePeriodMillis="0"`; `targetCell` 2×1.
 
-- [ ] **M4.2** — Widget snapshot and its store. A `WidgetSnapshot`: outdoor temp, indoor temp,
+- [x] **M4.2** — Widget snapshot and its store. A `WidgetSnapshot`: outdoor temp, indoor temp,
   next catchable departure (line, direction, `time`), fetch time. One pure mapping
   `DisplayStatus + fetch time → WidgetSnapshot` in `commonMain`. Each field is `null`-safe on its
   own: a `null` section, `bvg` `null`, and a `Bvg` with `hint == null` (no catchable departure,
@@ -86,6 +86,13 @@ Shared context for all of M4 (re-verify, don't re-derive):
   success; a failure keeps the old one.
   **Verify:** `commonTest`: the fixture maps to the expected snapshot; each `null` case above;
   the store round-trips a snapshot and returns `null` when empty. `./gradlew build` green.
+  Note: own DataStore (`WidgetSnapshotStore`, `widget/commonMain`), not Glance state: Glance
+  state is per widget instance and Android-only; this is one snapshot for all instances, tested in
+  `commonTest`. The snapshot is one JSON string (`deskmate.kmp.serialization` added to `widget`);
+  `fetchedAt` is a `kotlin.time.Instant`. A JSON that no longer decodes reads as `null`. The store
+  is **not in Koin yet**: M4.3 wires it. `DiscoveryModule` already provides an unqualified
+  `DataStore<Preferences>`, so the widget's DataStore needs a qualifier (or the store builds its
+  own), or Koin resolves the wrong file.
 
 - [ ] **M4.3** — Background refresh. Add WorkManager (`androidx.work:work-runtime`, latest
   stable; a dependency change, say so in the commit). A plain `WidgetRefresher` (`commonMain`): if the locator
