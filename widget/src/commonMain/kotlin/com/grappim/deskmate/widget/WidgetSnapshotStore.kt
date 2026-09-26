@@ -4,7 +4,9 @@ import androidx.datastore.core.DataStore
 import androidx.datastore.preferences.core.Preferences
 import androidx.datastore.preferences.core.edit
 import androidx.datastore.preferences.core.stringPreferencesKey
+import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.first
+import kotlinx.coroutines.flow.map
 import kotlinx.serialization.SerializationException
 import kotlinx.serialization.json.Json
 
@@ -18,17 +20,22 @@ import kotlinx.serialization.json.Json
 class WidgetSnapshotStore(private val dataStore: DataStore<Preferences>) {
 
     /**
-     * `null` when nothing was saved yet. Also `null` when the stored JSON no longer decodes (an
-     * app update changed [WidgetSnapshot]): the next successful fetch writes a new one.
+     * The last snapshot, and each new one as it is saved. `null` when nothing was saved yet. Also
+     * `null` when the stored JSON no longer decodes (an app update changed [WidgetSnapshot]): the
+     * next successful fetch writes a new one.
      */
-    suspend fun read(): WidgetSnapshot? {
-        val json = dataStore.data.first()[KEY_SNAPSHOT] ?: return null
-        return try {
-            Json.decodeFromString<WidgetSnapshot>(json)
-        } catch (_: SerializationException) {
-            null
+    val snapshots: Flow<WidgetSnapshot?> = dataStore.data.map { prefs ->
+        prefs[KEY_SNAPSHOT]?.let { json ->
+            try {
+                Json.decodeFromString<WidgetSnapshot>(json)
+            } catch (_: SerializationException) {
+                null
+            }
         }
     }
+
+    /** The current value of [snapshots]. */
+    suspend fun read(): WidgetSnapshot? = snapshots.first()
 
     suspend fun save(snapshot: WidgetSnapshot) {
         dataStore.edit { prefs -> prefs[KEY_SNAPSHOT] = Json.encodeToString(snapshot) }

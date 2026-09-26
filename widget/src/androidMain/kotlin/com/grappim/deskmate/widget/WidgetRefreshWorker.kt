@@ -5,7 +5,9 @@ import androidx.glance.appwidget.updateAll
 import androidx.work.Constraints
 import androidx.work.CoroutineWorker
 import androidx.work.ExistingPeriodicWorkPolicy
+import androidx.work.ExistingWorkPolicy
 import androidx.work.NetworkType
+import androidx.work.OneTimeWorkRequestBuilder
 import androidx.work.PeriodicWorkRequestBuilder
 import androidx.work.WorkManager
 import androidx.work.WorkerParameters
@@ -15,6 +17,7 @@ import org.koin.core.component.inject
 import java.util.concurrent.TimeUnit
 
 private const val PERIODIC_WORK_NAME = "widget-refresh"
+private const val ONE_TIME_WORK_NAME = "widget-refresh-now"
 
 /** WorkManager's minimum period. IMPLEMENTATION_PLAN.md §5. */
 private const val PERIOD_MINUTES = 15L
@@ -38,10 +41,21 @@ class WidgetRefreshWorker(context: Context, params: WorkerParameters) :
         /** `KEEP`: an app start does not reset the period of work that is already enqueued. */
         fun schedulePeriodic(context: Context) {
             val request = PeriodicWorkRequestBuilder<WidgetRefreshWorker>(PERIOD_MINUTES, TimeUnit.MINUTES)
-                .setConstraints(Constraints.Builder().setRequiredNetworkType(NetworkType.CONNECTED).build())
+                .setConstraints(networkConnected)
                 .build()
             WorkManager.getInstance(context)
                 .enqueueUniquePeriodicWork(PERIODIC_WORK_NAME, ExistingPeriodicWorkPolicy.KEEP, request)
         }
+
+        /** One run now. `KEEP`: taps while a run is queued or running add no extra fetch. */
+        fun refreshNow(context: Context) {
+            val request = OneTimeWorkRequestBuilder<WidgetRefreshWorker>()
+                .setConstraints(networkConnected)
+                .build()
+            WorkManager.getInstance(context)
+                .enqueueUniqueWork(ONE_TIME_WORK_NAME, ExistingWorkPolicy.KEEP, request)
+        }
+
+        private val networkConnected = Constraints.Builder().setRequiredNetworkType(NetworkType.CONNECTED).build()
     }
 }

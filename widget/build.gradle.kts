@@ -12,6 +12,8 @@ kotlin {
     sourceSets {
         androidMain.dependencies {
             implementation(libs.androidx.glance.appwidget)
+            // The widget text: CMP `getString`, see `DeskmateWidget`.
+            implementation(projects.strings)
             implementation(libs.androidx.work.runtime)
             // `preferencesDataStoreFile`, for the file path under the app's files dir.
             implementation(libs.androidx.datastore.preferences)

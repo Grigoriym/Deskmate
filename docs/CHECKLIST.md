@@ -1,6 +1,6 @@
 # Deskmate checklist
 
-**Current step:** M4.4 — M4.3 (background refresh) done 2026-09-26; its forced-run check not run.
+**Current step:** M4.5 — M4.4 (widget layout and refresh button) done 2026-09-26.
 
 ## How to use this
 
@@ -113,7 +113,7 @@ Shared context for all of M4 (re-verify, don't re-derive):
   before schedule"), and the user chose not to wait 15 min. M4.4's refresh button runs the same
   worker on demand; M4.6 checks the 15 min run on the phone.
 
-- [ ] **M4.4** — Widget layout and refresh button. Render the snapshot: outdoor temp, indoor
+- [x] **M4.4** — Widget layout and refresh button. Render the snapshot: outdoor temp, indoor
   temp, next departure (or "no trains"), and "as of HH:mm". No snapshot yet → "no data yet".
   Tap anywhere else → open `MainActivity`. Refresh button → one-time unique work that runs
   `WidgetRefresher`, with `KEEP` so repeated taps queue no extra calls. User text comes
@@ -122,6 +122,17 @@ Shared context for all of M4 (re-verify, don't re-derive):
   **Verify:** `./gradlew build` green. On the emulator with a manual IP that reaches the display
   (M3.5 did): the widget shows real values that match the app; the refresh button updates "as of"
   (screenshot before/after); the tap opens the app. With no snapshot: "no data yet".
+  Note: strings from CMP `getString` (the `strings` module), not Android resources: all user text
+  stays in one file. `getString` is `suspend`, so the text is resolved in a `Flow`, outside the
+  composition. The widget collects `WidgetSnapshotStore.snapshots` (new): Glance calls
+  `provideGlance` once per session, and an `update()` in a live session only recomposes, so a
+  one-shot `read()` would show old data. "as of" uses the phone's time format (12/24 h). The
+  departure reads "U5 21:40, HAUPTBAHNHOF": at 2×1 the direction gets cut, not the time. The
+  indoor "°C" is cut at 2×1; the widget is resizable. The one-time work has the same
+  network-connected constraint as the periodic one. No new external dependency (`widget` →
+  `strings` is a project dependency). Emulator: 3 fast taps gave 2 runs (the tap during run 1 was
+  dropped by `KEEP`); values match the app and `curl`; refresh from "No data yet" filled the
+  widget without a re-install (the `Flow` path).
 
 - [ ] **M4.5** — App poll refreshes the widget. Each successful poll in `DisplayViewModel` saves
   the snapshot and asks the widget to update. `feature:display:ui` is `commonMain`, Glance is not,

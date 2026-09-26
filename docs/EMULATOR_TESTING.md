@@ -47,3 +47,8 @@ technique lives in the skill itself, not here — this file is only what's true 
   `cmd jobscheduler run -f -n androidx.work.systemjobscheduler <pkg> <id>` does not run a periodic
   worker early: WorkManager logs "executed before schedule" and re-enqueues it. Logcat lines start
   with "Widget refresh".
+- The widget layout (M4.4): at the default 2×1 on this AVD the refresh icon is at about (463, 574)
+  with data, (463, 547) with "No data yet". `am broadcast -a android.appwidget.action.APPWIDGET_UPDATE`
+  from the shell fails with "Permission Denial" (protected broadcast). To re-render the widget
+  (for example after deleting `files/datastore/widget.preferences_pb`), `adb install -r` the APK
+  again: the package update makes the launcher render it.
