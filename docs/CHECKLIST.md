@@ -1,6 +1,6 @@
 # Deskmate checklist
 
-**Current step:** M2.1 — M2 broken down 2026-09-26 into M2.1-M2.4.
+**Current step:** M2.2 — M2.1 (saved host store) done 2026-09-26.
 
 ## How to use this
 
@@ -58,7 +58,7 @@ Shared context for all of M2 (re-verify, don't re-derive):
 - **The emulator can't see the home LAN's mDNS.** Any step that needs the real display runs on
   the user's phone on the home WiFi, or on the dev machine as M1.3 did.
 
-- [ ] **M2.1** — Saved host store in `core:discovery`: read, save and clear one host string
+- [x] **M2.1** — Saved host store in `core:discovery`: read, save and clear one host string
   (for example `http://192.168.0.147`, the form `DeskApi.baseUrl` takes). DataStore Preferences
   in `commonMain`; the Android file path and Koin provider in `androidMain`, as wallosmobile's
   `StorageModule` does. Catalog: DataStore under one version key; take the current version,
@@ -67,6 +67,10 @@ Shared context for all of M2 (re-verify, don't re-derive):
   **Verify:** `commonTest` against a DataStore on a temp file: empty store reads `null`; a saved
   host reads back; it survives a new store instance on the same file; `clear()` empties it.
   `./gradlew build` green.
+  Note: DataStore `1.2.1` is the newest stable (1.3.0 is alpha). `SavedHostStore` +
+  `DiscoveryModule` (androidMain) exist, but `composeApp` does not include `DiscoveryModule`
+  yet; that is M2.4. DataStore allows one active instance per file, so the "new instance" test
+  cancels the first store's scope before it opens the second.
 
 - [ ] **M2.2** — NSD finder: an interface in `commonMain` (one call: "find the display, or
   `null` after a timeout"), the `NsdManager` implementation in `androidMain`. Discover

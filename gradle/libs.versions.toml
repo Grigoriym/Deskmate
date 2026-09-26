@@ -36,6 +36,8 @@ kotlin-date-time = "0.8.0"
 # https://github.com/cashapp/turbine/releases
 turbine = "1.2.1"
 ktor = "3.5.2"
+# https://developer.android.com/jetpack/androidx/releases/datastore
+dataStore = "1.2.1"
 
 # https://github.com/InsertKoinIO/koin/releases
 koin-bom = "4.2.2"
@@ -91,6 +93,9 @@ kotlinx-date-time = { module = "org.jetbrains.kotlinx:kotlinx-datetime", version
 ktor-core = { module = "io.ktor:ktor-client-core", version.ref = "ktor" }
 ktor-client-okhttp = { module = "io.ktor:ktor-client-okhttp", version.ref = "ktor" }
 ktor-client-mock = { module = "io.ktor:ktor-client-mock", version.ref = "ktor" }
+
+androidx-datastore-preferences = { module = "androidx.datastore:datastore-preferences", version.ref = "dataStore" }
+androidx-datastore-preferences-core = { module = "androidx.datastore:datastore-preferences-core", version.ref = "dataStore" }
 
 koin-bom = { module = "io.insert-koin:koin-bom", version.ref = "koin-bom" }
 koin-core = { module = "io.insert-koin:koin-core" }
