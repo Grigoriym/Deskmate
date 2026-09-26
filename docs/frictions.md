@@ -18,6 +18,3 @@ entries get deleted — see /finalize.
   `failFast = true` (`build-logic/.../Quality.kt`), so the run stops at the first failure. One
   mutation per run.
 - 2026-09-26 — `adb -s <serial> logcat` after the phone disconnected: adb printed "waiting for device" and blocked until the 120 s timeout. Check `adb devices` first, or use `adb wait-for-device` with a `timeout`.
-- 2026-09-26 — `adb shell am broadcast -a android.appwidget.action.APPWIDGET_UPDATE -n <receiver>`
-  failed with "Permission Denial: not allowed to send broadcast": it is a protected broadcast. An
-  `adb install -r` of the same APK re-rendered the widget instead.
