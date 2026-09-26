@@ -101,7 +101,12 @@ Shared context for all of M2 (re-verify, don't re-derive):
 
 ## M3 — status screen and controls (`feature:display`) — break down at start
 
-Domain model + formatting (rain text, pollen bands, AQI label, warning pick, BVG
+First: API.md gained a `co2` section (esp32-desk-display `0a9838e`, 2026-09-26). Add it to
+`StatusDto` and re-sync the `StatusExampleJson.kt` fixture to that commit (see the M1.1 fixture
+entry in `docs/revisit.md`). The current app ignores the field, so nothing breaks before then.
+
+Domain model + formatting (rain text, pollen bands, AQI label, CO2 band per API.md's `co2`
+table, warning pick, BVG
 `LEAVE IN`/`GO NOW`/`HURRY` with `walk_min`/`walk_comfort`, 1970 date before clock sync),
 all tested. UI: one card per section, each independently `null`-safe; a not-found state with
 the manual IP field (M2's `setManual`); poll every 5 s only while visible; offline → last data

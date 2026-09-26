@@ -21,8 +21,8 @@ plan does not copy it. Facts that shape the app's design:
 - LAN only, plain HTTP on port 80, no auth. The app must allow cleartext traffic.
 - Discovery: NSD `_http._tcp.`, filter by service name `Desk display`. Fallback:
   `desk.local`, then a manual IP. The IP comes from DHCP and can change.
-- `GET /api/status` — one JSON object. Every section (`outdoor`, `indoor`, `air`,
-  `warning`, `next_holiday`, `bvg`) can be `null` independently. `bvg` is `null` for long
+- `GET /api/status` — one JSON object. Every section (`outdoor`, `indoor`, `co2`,
+  `air`, `warning`, `next_holiday`, `bvg`) can be `null` independently. `bvg` is `null` for long
   stretches (the upstream API is often down).
 - `POST /api/screen?go=…`, `POST /api/panel?set=…` — queued, applied within ~300 ms, up to
   ~10 s during a device fetch. Re-read status ~150 ms later.
@@ -59,7 +59,7 @@ backends/features and would be empty structure here.
 | `composeApp` | DI root, app shell, navigation | |
 | `core:api` | Ktor client, DTOs, `DeskApi` (status, screen, panel), error → result mapping, request serialisation (one at a time) | `commonMain`; fixture-tested against `status.example.json` |
 | `core:discovery` | find the display: NSD (`androidMain`), `desk.local`, manual IP; remember the last good host | `expect`/`actual` or an interface with an Android impl |
-| `feature:display:domain` | UI-ready model: rain text, pollen levels, AQI band, warning, `LEAVE IN`/`GO NOW`/`HURRY`, staleness | pure Kotlin, the logic that gets tests |
+| `feature:display:domain` | UI-ready model: rain text, pollen levels, AQI band, CO2 band, warning, `LEAVE IN`/`GO NOW`/`HURRY`, staleness | pure Kotlin, the logic that gets tests |
 | `feature:display:ui` | status screen (one card per section) + screen/panel controls, polling while visible | |
 | `widget` | Glance widget (outdoor/indoor temp, next departure) | Android-only |
 | `strings` | CMP string resources | |

@@ -17,6 +17,7 @@ cold session can act on it. Delete an entry when it's fixed.
   `../esp32-desk-display/docs/api/status.example.json`. Check by hand:
   `awk '/^    """$/{f=1;next} /""".trimIndent/{f=0} f' <kt file> | sed 's/^    //' | diff - <json file>`.
   A small script (or a step in the esp32 repo's workflow) would make it a tool, not a memory.
+  Drift is now real: esp32-desk-display `0a9838e` added `co2` to the example; M3 re-syncs it.
 - 2026-09-26 (M1.2) — `DeskApi.status()` does not catch `SerializationException`: a `200` whose
   body doesn't decode throws out of the call
   (`core/api/src/commonMain/kotlin/com/grappim/deskmate/core/api/DeskApi.kt`, `call()`). The
