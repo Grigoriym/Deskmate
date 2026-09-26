@@ -43,3 +43,7 @@ technique lives in the skill itself, not here — this file is only what's true 
 - The widget (M4.1): `dumpsys appwidget | grep -i deskmate` shows the provider is registered.
   To place it: long-press the home screen, "Widgets", the "Browse" tab, expand "Deskmate",
   tap the 2×1 preview, then the "Add Deskmate widget" button (`content-desc`). No drag needed.
+- The widget worker (M4.3): `dumpsys jobscheduler`, job tag `#WidgetRefreshWorker#`. A forced
+  `cmd jobscheduler run -f -n androidx.work.systemjobscheduler <pkg> <id>` does not run a periodic
+  worker early: WorkManager logs "executed before schedule" and re-enqueues it. Logcat lines start
+  with "Widget refresh".

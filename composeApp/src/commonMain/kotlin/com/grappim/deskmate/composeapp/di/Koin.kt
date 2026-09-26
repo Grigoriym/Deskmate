@@ -6,6 +6,7 @@ import com.grappim.deskmate.core.discovery.DiscoveryModule
 import com.grappim.deskmate.core.discovery.HostLocator
 import com.grappim.deskmate.core.discovery.HostState
 import com.grappim.deskmate.feature.display.ui.DisplayUiModule
+import com.grappim.deskmate.widget.WidgetModule
 import io.ktor.client.engine.HttpClientEngine
 import org.koin.core.annotation.ComponentScan
 import org.koin.core.annotation.Configuration
@@ -15,10 +16,11 @@ import org.koin.core.annotation.Single
 
 /**
  * `composeApp` is Android-only, so `@ComponentScan` alone reaches every definition in this
- * compilation. Other Gradle modules' `@Module`s go into the explicit `includes`. [ApiModule] and
- * [DiscoveryModule] are `androidMain`-only; `commonMain` compiles against the Android variant.
+ * compilation. Other Gradle modules' `@Module`s go into the explicit `includes`. [ApiModule],
+ * [DiscoveryModule] and [WidgetModule] are `androidMain`-only; `commonMain` compiles against the
+ * Android variant.
  */
-@Module(includes = [ApiModule::class, DiscoveryModule::class, DisplayUiModule::class])
+@Module(includes = [ApiModule::class, DiscoveryModule::class, DisplayUiModule::class, WidgetModule::class])
 @Configuration
 @ComponentScan("com.grappim.deskmate.composeapp")
 class AppModule {

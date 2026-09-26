@@ -2,6 +2,7 @@ package com.grappim.deskmate
 
 import android.app.Application
 import com.grappim.deskmate.composeapp.di.KoinApp
+import com.grappim.deskmate.widget.WidgetRefreshWorker
 import com.grappim.kit.logger.TimberLogger
 import org.koin.android.ext.koin.androidContext
 import org.koin.plugin.module.dsl.startKoin
@@ -19,5 +20,7 @@ class DeskmateApp : Application() {
         startKoin<KoinApp> {
             androidContext(this@DeskmateApp)
         }
+
+        WidgetRefreshWorker.schedulePeriodic(this)
     }
 }

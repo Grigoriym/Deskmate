@@ -10,6 +10,8 @@ kotlin {
             implementation(projects.core.api)
             implementation(projects.core.discovery)
             implementation(projects.feature.display.ui)
+            // `WidgetModule` joins the app graph: the widget's worker resolves through it.
+            implementation(projects.widget)
             // `DeskHostProbe` builds a `DeskApi` on the shared `HttpClientEngine`.
             implementation(libs.ktor.core)
         }

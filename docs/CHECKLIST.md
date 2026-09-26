@@ -1,6 +1,6 @@
 # Deskmate checklist
 
-**Current step:** M4.3 — M4.2 (widget snapshot and store) done 2026-09-26.
+**Current step:** M4.4 — M4.3 (background refresh) done 2026-09-26; its forced-run check not run.
 
 ## How to use this
 
@@ -94,7 +94,7 @@ Shared context for all of M4 (re-verify, don't re-derive):
   `DataStore<Preferences>`, so the widget's DataStore needs a qualifier (or the store builds its
   own), or Koin resolves the wrong file.
 
-- [ ] **M4.3** — Background refresh. Add WorkManager (`androidx.work:work-runtime`, latest
+- [x] **M4.3** — Background refresh. Add WorkManager (`androidx.work:work-runtime`, latest
   stable; a dependency change, say so in the commit). A plain `WidgetRefresher` (`commonMain`): if the locator
   is not `Found`, `locate()` first; then `status()`; on success, map and save the snapshot. On
   any failure keep the last snapshot; don't call `rediscover()` (the app's poll owns that, M3.4).
@@ -105,6 +105,13 @@ Shared context for all of M4 (re-verify, don't re-derive):
   `NotFound` keep the old snapshot and call no `rediscover()`. `./gradlew build` green. On the
   emulator: `adb shell dumpsys jobscheduler` (or WorkManager's diagnostics) shows the periodic
   work; forcing it once logs a run.
+  Note: `work-runtime` 2.12.0. `WidgetModule` (`widget/androidMain`) provides the store with its
+  own DataStore file `widget`, so no second `DataStore<Preferences>` bean. `composeApp` now depends
+  on `widget` to include `WidgetModule`. The worker gets `WidgetRefresher` as a `KoinComponent`
+  (no `WorkerFactory`). Emulator: `dumpsys jobscheduler` shows the job (`CONNECTIVITY`, first run
+  after ~15 min). **Not run:** the forced run. WorkManager defers a forced periodic job ("executed
+  before schedule"), and the user chose not to wait 15 min. M4.4's refresh button runs the same
+  worker on demand; M4.6 checks the 15 min run on the phone.
 
 - [ ] **M4.4** — Widget layout and refresh button. Render the snapshot: outdoor temp, indoor
   temp, next departure (or "no trains"), and "as of HH:mm". No snapshot yet → "no data yet".
