@@ -1,6 +1,6 @@
 # Deskmate checklist
 
-**Current step:** M2.3 — M2.2 (NSD finder) done 2026-09-26.
+**Current step:** M2.4 — M2.3 (`HostLocator`) done 2026-09-26.
 
 ## How to use this
 
@@ -92,7 +92,7 @@ Shared context for all of M2 (re-verify, don't re-derive):
   https://developer.android.com/privacy-and-security/local-network-permission . Not added in
   this step; see the M2.2 entry in `docs/revisit.md`, which M2.4 must handle.
 
-- [ ] **M2.3** — `HostLocator` in `commonMain`: runs the search order above and exposes the
+- [x] **M2.3** — `HostLocator` in `commonMain`: runs the search order above and exposes the
   state (searching / found host / not found) as a `StateFlow`. Also `setManual(ip)` (probe,
   then save; an unreachable IP is not saved) and `rediscover()` (skip the saved host, search
   again). The probe uses `DeskApi.status()`; decide in the step whether `core:discovery`
@@ -101,6 +101,12 @@ Shared context for all of M2 (re-verify, don't re-derive):
   found without NSD; saved host down → NSD finds a new IP → the store holds the new IP; NSD
   finds nothing → `desk.local` is tried; nothing passes → not found and the store is not
   cleared; manual IP unreachable → not saved. `./gradlew build` green.
+  Note: the probe is a `HostProbe` interface in `core:discovery`, not a `core:api` dependency.
+  `HostLocator` probes a different host on each call, but `DeskApi` is built around one
+  `baseUrl` and one engine. **M2.4 must implement `HostProbe`** (with `DeskApi`) and bind it;
+  without it, `KoinGraphTest` fails once `DiscoveryModule` is in the graph. Nothing searches
+  until a caller runs `locate()`; the start state is `Searching`. `setManual` takes an address
+  without a scheme and adds `http://`. On a failed `setManual`, the state does not change.
 
 - [ ] **M2.4** — Wiring: Koin provides `HostLocator`, and `DeskApi` with `baseUrl` from the
   found host. `KoinGraphTest` gets `Context` in `extraTypes`. The placeholder screen shows the
