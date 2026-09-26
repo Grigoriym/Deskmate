@@ -19,7 +19,10 @@ technique lives in the skill itself, not here — this file is only what's true 
 ## App-specific gotchas
 
 - The emulator and `adb` need the Bash sandbox disabled.
-- The user's phone: serial `R5CR214CSQL` (Samsung SM-G998B), `adb -s R5CR214CSQL`. It can drop
+- The user's phone: serial `R5CR214CSQL` (Samsung SM-G998B), `adb -s R5CR214CSQL`.
+  A second phone: serial `2c78f4512f1d7ece` (Samsung SM-A920F), seen 2026-09-26. The user
+  wants on-device checks on the connected phone, not a headless emulator: run `adb devices -l`
+  first. It can drop
   off adb during a session: run `adb devices` before a `logcat` read, or the read blocks.
 - The user's physical phone can be attached over USB at the same time. Always pass
   `-s emulator-5554` to `adb`; a bare `adb` fails with "more than one device".
