@@ -19,6 +19,8 @@ technique lives in the skill itself, not here — this file is only what's true 
 ## App-specific gotchas
 
 - The emulator and `adb` need the Bash sandbox disabled.
+- The user's phone: serial `R5CR214CSQL` (Samsung SM-G998B), `adb -s R5CR214CSQL`. It can drop
+  off adb during a session: run `adb devices` before a `logcat` read, or the read blocks.
 - The user's physical phone can be attached over USB at the same time. Always pass
   `-s emulator-5554` to `adb`; a bare `adb` fails with "more than one device".
 - On launch the emulator ends at "Display not found" (no NSD, no `desk.local`). That still
