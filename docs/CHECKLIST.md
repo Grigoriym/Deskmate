@@ -1,6 +1,6 @@
 # Deskmate checklist
 
-**Current step:** M3.1 — M3 broken down into M3.1-M3.6, 2026-09-26.
+**Current step:** M3.2 — M3.1 done (`co2` in the API client), 2026-09-26.
 
 ## How to use this
 
@@ -58,7 +58,7 @@ Shared context for all of M3 (re-verify, don't re-derive):
   `SerializationException` and the M1.2 unused `grappim-kit-coroutines` (M3.1 / M3.4), and the
   M0.2 detekt Compose rules (M3.5). Delete each entry in the step that settles it.
 
-- [ ] **M3.1** — `co2` in the API client. API.md gained a `co2` section (esp32-desk-display
+- [x] **M3.1** — `co2` in the API client. API.md gained a `co2` section (esp32-desk-display
   `0a9838e`). Add `Co2Dto` (`ppm: Int`) and a nullable `co2` to `StatusDto`, in API.md's field
   order. Re-sync `StatusExampleJson.kt` to that commit's `docs/api/status.example.json` and
   update its source comment. Settle the M1.2 unused `grappim-kit-coroutines` entry: remove the
@@ -66,6 +66,9 @@ Shared context for all of M3 (re-verify, don't re-derive):
   say so in the commit).
   **Verify:** the revisit entry's `awk … | diff` command prints nothing. `StatusDtoTest` asserts
   `co2.ppm`, and the all-`null` test covers `co2`. `./gradlew build` green.
+  Note: the `grappim-kit-coroutines` catalog entry went too (no other user). `kotlinx.coroutines`
+  in `core:api` comes from the KMP convention plugin. The fixture-drift revisit entry stays: the
+  drift is fixed, the missing drift check is not.
 
 - [ ] **M3.2** — Domain model and mapper, all sections except `bvg`. One function
   `StatusDto → DisplayStatus`; `feature:display:domain` loses its `Placeholder`. Typed values:

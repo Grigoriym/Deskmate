@@ -10,7 +10,7 @@ import kotlin.test.Test
 import kotlin.test.assertEquals
 
 class StatusDtoTest {
-    private val sections = listOf("outdoor", "indoor", "air", "warning", "next_holiday", "bvg")
+    private val sections = listOf("outdoor", "indoor", "co2", "air", "warning", "next_holiday", "bvg")
 
     private val expected = StatusDto(
         time = "17:42",
@@ -27,6 +27,7 @@ class StatusDtoTest {
             rain = RainDto(inH = 0, from = "17:00", until = "20:00")
         ),
         indoor = IndoorDto(tempC = 23.1, humidityPct = 44.9, pressureHpa = 1014.2),
+        co2 = Co2Dto(ppm = 863),
         air = AirDto(
             aqi = 31,
             aqiLabel = "FAIR",
@@ -66,6 +67,7 @@ class StatusDtoTest {
         val expectedNulls = expected.copy(
             outdoor = null,
             indoor = null,
+            co2 = null,
             air = null,
             warning = null,
             nextHoliday = null,

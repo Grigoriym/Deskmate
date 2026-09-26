@@ -19,6 +19,7 @@ data class StatusDto(
     @SerialName("panel_on") val panelOn: Boolean,
     val outdoor: OutdoorDto?,
     val indoor: IndoorDto?,
+    val co2: Co2Dto?,
     val air: AirDto?,
     val warning: WarningDto?,
     @SerialName("next_holiday") val nextHoliday: NextHolidayDto?,
@@ -46,6 +47,9 @@ data class IndoorDto(
     @SerialName("humidity_pct") val humidityPct: Double,
     @SerialName("pressure_hpa") val pressureHpa: Double
 )
+
+@Serializable
+data class Co2Dto(val ppm: Int)
 
 @Serializable
 data class AirDto(val aqi: Int, @SerialName("aqi_label") val aqiLabel: String, val pollen: PollenDto)

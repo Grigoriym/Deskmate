@@ -2,7 +2,7 @@ package com.grappim.deskmate.core.api.dto
 
 /**
  * Verbatim copy of `../esp32-desk-display/docs/api/status.example.json`, as of esp32-desk-display
- * commit `cf9740c992878e3d6f9e06e81f4be91dffb0d162` (the last commit that changed it, 2026-09-26).
+ * commit `0a9838ebf470907343bde3b3cdf36bd24547f568` (the last commit that changed it, 2026-09-26).
  * The firmware's host test keeps that file equal to its real output. When it changes there,
  * copy it here again and update the commit.
  */
@@ -30,6 +30,9 @@ internal val statusExampleJson: String =
         "temp_c": 23.1,
         "humidity_pct": 44.9,
         "pressure_hpa": 1014.2
+      },
+      "co2": {
+        "ppm": 863
       },
       "air": {
         "aqi": 31,
