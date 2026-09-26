@@ -7,8 +7,13 @@ plugins {
 
 kotlin {
     sourceSets {
-        commonTest.dependencies {
-            implementation(libs.ktor.client.mock)
+        commonTest {
+            // The `status.example.json` fixture. Its own directory, so `feature:display:domain`
+            // tests can compile the same file instead of a second copy.
+            kotlin.srcDir("src/commonTestFixture/kotlin")
+            dependencies {
+                implementation(libs.ktor.client.mock)
+            }
         }
     }
 }

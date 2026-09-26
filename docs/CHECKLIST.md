@@ -1,6 +1,6 @@
 # Deskmate checklist
 
-**Current step:** M3.2 — M3.1 done (`co2` in the API client), 2026-09-26.
+**Current step:** M3.3 — M3.2 done (domain model and mapper, all sections except `bvg`), 2026-09-26.
 
 ## How to use this
 
@@ -70,7 +70,7 @@ Shared context for all of M3 (re-verify, don't re-derive):
   in `core:api` comes from the KMP convention plugin. The fixture-drift revisit entry stays: the
   drift is fixed, the missing drift check is not.
 
-- [ ] **M3.2** — Domain model and mapper, all sections except `bvg`. One function
+- [x] **M3.2** — Domain model and mapper, all sections except `bvg`. One function
   `StatusDto → DisplayStatus`; `feature:display:domain` loses its `Placeholder`. Typed values:
   - `screen` → enum of API.md's five screens; `panel_on` as is.
   - `date` in 1970 → "clock not synced yet" (then `time` means nothing either).
@@ -87,6 +87,10 @@ Shared context for all of M3 (re-verify, don't re-derive):
   **Verify:** `commonTest` decodes the fixture and checks the mapped model. One test per rule,
   incl. every rain case, every band boundary (CO2, pollen), each `null` section on its own, an
   unknown `aqi_label`/`severity`/`screen`, a 1970 date. `./gradlew build` green.
+  Note: `Screen` has an `UNKNOWN` entry (an unknown `screen` must not crash either). A `warning`
+  with `count` > 0 but a missing field maps to `Warning.Unknown`. `date`/`time` stay strings (no
+  `kotlinx-datetime`). The fixture moved to `core/api/src/commonTestFixture/`, compiled by both
+  `core:api` and `feature:display:domain` tests (`srcDir` in both `build.gradle.kts`; one copy).
 
 - [ ] **M3.3** — BVG in the domain model. `bvg` `null` → no data. Otherwise the departures
   (line, direction, time, `in_min`), with the uncatchable ones (`in_min` < `walk_min`) marked

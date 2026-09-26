@@ -13,7 +13,7 @@ cold session can act on it. Delete an entry when it's fixed.
   XML report" step and run https://github.com/Grigoriym/Deskmate/actions/runs/36249336150.
   Bump to the current major; wayprint's `ci.yml` has the same pin.
 - 2026-09-26 (M1.1) — Nothing detects drift between the fixture
-  `core/api/src/commonTest/kotlin/com/grappim/deskmate/core/api/dto/StatusExampleJson.kt` and
+  `core/api/src/commonTestFixture/kotlin/com/grappim/deskmate/core/api/dto/StatusExampleJson.kt` and
   `../esp32-desk-display/docs/api/status.example.json`. Check by hand:
   `awk '/^    """$/{f=1;next} /""".trimIndent/{f=0} f' <kt file> | sed 's/^    //' | diff - <json file>`.
   A small script (or a step in the esp32 repo's workflow) would make it a tool, not a memory.
@@ -32,3 +32,8 @@ cold session can act on it. Delete an entry when it's fixed.
   on a real Android 17 device; the M2.4 phone is API 35. Test it on an Android 17 device or
   emulator: allow → found; deny → "Display not found", no crash. Source:
   https://developer.android.com/privacy-and-security/local-network-permission
+- 2026-09-26 (M3.2) — API.md and the firmware disagree on the storm group. API.md: `weather_code`
+  95-99 is storm. `../esp32-desk-display/main/weather_parse.c` `weather_icon_for_code()`: only
+  95, 96, 99; so 97 and 98 fall to cloud on the panel. The app follows API.md
+  (`feature/display/domain/.../StatusMapper.kt`, `weatherGroup()`). Open-Meteo does not seem to
+  send 97/98, so this is cosmetic. Fix it in the esp32-desk-display repo (doc or code), not here.
