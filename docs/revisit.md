@@ -17,3 +17,10 @@ cold session can act on it. Delete an entry when it's fixed.
   `../esp32-desk-display/docs/api/status.example.json`. Check by hand:
   `awk '/^    """$/{f=1;next} /""".trimIndent/{f=0} f' <kt file> | sed 's/^    //' | diff - <json file>`.
   A small script (or a step in the esp32 repo's workflow) would make it a tool, not a memory.
+- 2026-09-26 (M1.2) — `DeskApi.status()` does not catch `SerializationException`: a `200` whose
+  body doesn't decode throws out of the call
+  (`core/api/src/commonMain/kotlin/com/grappim/deskmate/core/api/DeskApi.kt`, `call()`). The
+  M3 poll loop must not die on it: catch it there, or add a `DeskResult` variant then.
+- 2026-09-26 (M1.2) — `core/api/build.gradle.kts` declares `grappim-kit-coroutines`, but
+  nothing in `core:api` uses it (M0 added it for `DeskApi` dispatchers; Ktor's engine does its
+  own threading). Remove it, or keep it if M2/M3 put something in `core:api` that needs it.
