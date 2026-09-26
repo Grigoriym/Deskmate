@@ -8,6 +8,8 @@ import com.grappim.deskmate.core.discovery.HostLocator
 import com.grappim.deskmate.core.discovery.HostProbe
 import com.grappim.deskmate.core.discovery.HostState
 import com.grappim.deskmate.core.discovery.SavedHostStore
+import com.grappim.deskmate.feature.display.domain.DisplayStatus
+import com.grappim.deskmate.feature.display.domain.StatusListener
 import com.grappim.kit.testing.MainDispatcherRule
 import io.ktor.client.engine.mock.MockEngine
 import io.ktor.client.engine.mock.MockEngineConfig
@@ -44,6 +46,7 @@ class DisplayViewModelTest {
     private val finder = FakeDisplayFinder()
     private val probe = FakeHostProbe()
     private val locator = HostLocator(store, finder, probe)
+    private val listener = FakeStatusListener()
 
     /** Each request as `"<virtual ms> <method> <url>"`. */
     private val requests = mutableListOf<String>()
@@ -66,6 +69,29 @@ class DisplayViewModelTest {
 
         assertEquals(listOf(0L, 5_000L, 10_000L), requests.map { it.substringBefore(' ').toLong() })
         assertNotNull(vm.uiState.value.status)
+    }
+
+    @Test
+    fun `a successful poll saves one snapshot for the widget`() = runTest {
+        val vm = foundViewModel()
+        collect(vm)
+
+        runCurrent()
+
+        assertEquals(1, requests.size)
+        assertEquals(listOf(vm.uiState.value.status), listener.statuses)
+    }
+
+    @Test
+    fun `a failed poll saves no snapshot`() = runTest {
+        val vm = foundViewModel()
+        handler = { respond("Status JSON failed", HttpStatusCode.InternalServerError) }
+        collect(vm)
+
+        runCurrent()
+
+        assertEquals(1, requests.size)
+        assertEquals(emptyList(), listener.statuses)
     }
 
     @Test
@@ -240,7 +266,7 @@ class DisplayViewModelTest {
             }
         }
         val api = DeskApi(MockEngine(config)) { (locator.state.value as HostState.Found).host }
-        return DisplayViewModel(locator, api)
+        return DisplayViewModel(locator, api, listener)
     }
 
     /** What the screen does while it is visible. */
@@ -263,6 +289,13 @@ class DisplayViewModelTest {
         override suspend fun find(): String? {
             calls++
             return result
+        }
+    }
+
+    private class FakeStatusListener : StatusListener {
+        val statuses = mutableListOf<DisplayStatus>()
+        override suspend fun onStatus(status: DisplayStatus) {
+            statuses += status
         }
     }
 

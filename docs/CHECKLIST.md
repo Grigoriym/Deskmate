@@ -1,6 +1,6 @@
 # Deskmate checklist
 
-**Current step:** M4.5 — M4.4 (widget layout and refresh button) done 2026-09-26.
+**Current step:** M4.6 — M4.5 (app poll refreshes the widget) done 2026-09-26.
 
 ## How to use this
 
@@ -134,7 +134,7 @@ Shared context for all of M4 (re-verify, don't re-derive):
   dropped by `KEEP`); values match the app and `curl`; refresh from "No data yet" filled the
   widget without a re-install (the `Flow` path).
 
-- [ ] **M4.5** — App poll refreshes the widget. Each successful poll in `DisplayViewModel` saves
+- [x] **M4.5** — App poll refreshes the widget. Each successful poll in `DisplayViewModel` saves
   the snapshot and asks the widget to update. `feature:display:ui` is `commonMain`, Glance is not,
   so it talks to the widget through an interface: the interface exists for the module
   boundary, not for the test. Decide where it lives and which module depends on which (no
@@ -143,6 +143,15 @@ Shared context for all of M4 (re-verify, don't re-derive):
   **Verify:** `DisplayViewModel` `commonTest`: a successful poll saves one snapshot; a failed
   one saves none. `./gradlew build` green, `KoinGraphTest` passes. On the emulator: open the
   app, go home, the widget's "as of" matches the last app poll.
+  Note: `StatusListener` (`suspend fun onStatus(DisplayStatus)`) lives in
+  `feature:display:domain`: `feature:display:ui` and `widget` both depend on it already, so no new
+  module edge and no cycle. `WidgetStatusListener` (`widget/androidMain`, `@Single(binds)`, as
+  `NsdDisplayFinder`) saves the snapshot, then `updateAll`. **No throttle:** on the phone
+  (SM-A920F, API 29, run on the real device, not the emulator) a 70 s app run gave 15 widget
+  renders ~5 s apart, none dropped. The updates keep one Glance `SessionWorker` alive for the
+  whole run (one start); a live session only recomposes. The saved `fetchedAt` (21:42:53.168)
+  matched the last render (21:42:53.244); no `WidgetRefreshWorker` run in logcat. A command's
+  150 ms re-read saves a snapshot too (it is a poll).
 
 - [ ] **M4.6** — Real-device check, on the user's phone on the home WiFi. Nothing to build
   unless it finds a bug. Ask the user before unplugging the display (memory: no restart and no

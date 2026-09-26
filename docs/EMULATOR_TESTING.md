@@ -55,3 +55,8 @@ technique lives in the skill itself, not here — this file is only what's true 
   from the shell fails with "Permission Denial" (protected broadcast). To re-render the widget
   (for example after deleting `files/datastore/widget.preferences_pb`), `adb install -r` the APK
   again: the package update makes the launcher render it.
+- The widget on the SM-A920F (M4.5, API 29, Samsung launcher): long-press an empty home cell
+  (not the weather widget: that opens its resize frame), "Widgets", then drag the Deskmate cell:
+  `adb shell input draganddrop <cell center> <empty home cell> 2500`. A tap does not place it.
+  On API < 31 each widget render logs `GlanceAppWidget: Cannot set the rounded corner of views
+  before Api 31` (so the corners are square there). Count those lines to count renders.

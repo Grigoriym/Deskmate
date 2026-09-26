@@ -8,6 +8,7 @@ import com.grappim.deskmate.core.api.PanelCommand
 import com.grappim.deskmate.core.api.ScreenCommand
 import com.grappim.deskmate.core.discovery.HostLocator
 import com.grappim.deskmate.core.discovery.HostState
+import com.grappim.deskmate.feature.display.domain.StatusListener
 import com.grappim.deskmate.feature.display.domain.toDisplayStatus
 import com.grappim.kit.logger.logcat
 import kotlinx.coroutines.CancellationException
@@ -39,7 +40,11 @@ private const val REREAD_DELAY_MS = 150L
  * a recomposition and a rotation, and the last status must survive a rotation too.
  */
 @KoinViewModel
-class DisplayViewModel(private val locator: HostLocator, private val api: DeskApi) : ViewModel() {
+class DisplayViewModel(
+    private val locator: HostLocator,
+    private val api: DeskApi,
+    private val listener: StatusListener
+) : ViewModel() {
     private val content = MutableStateFlow(DisplayUiState())
     private var rediscovery: Job? = null
 
@@ -86,8 +91,10 @@ class DisplayViewModel(private val locator: HostLocator, private val api: DeskAp
         when (val result = call { status() }) {
             null -> Unit
 
-            is DeskResult.Success -> content.update {
-                it.copy(status = result.value.toDisplayStatus(), isStale = false, error = null)
+            is DeskResult.Success -> {
+                val status = result.value.toDisplayStatus()
+                content.update { it.copy(status = status, isStale = false, error = null) }
+                listener.onStatus(status)
             }
 
             else -> onFailure(result)
