@@ -28,9 +28,3 @@ cold session can act on it. Delete an entry when it's fixed.
   95, 96, 99; so 97 and 98 fall to cloud on the panel. The app follows API.md
   (`feature/display/domain/.../StatusMapper.kt`, `weatherGroup()`). Open-Meteo does not seem to
   send 97/98, so this is cosmetic. Fix it in the esp32-desk-display repo (doc or code), not here.
-- 2026-09-26 (M3.6) — Two M3.6 real-device checks were skipped (user's decision), so nothing has
-  run them on a real display: unplug the display → stale mark within ~10 s, one `rediscover()`
-  (logcat tag `HostLocator`), fresh data after replug without an app restart; and app in the
-  background → no polls in logcat. Only `DisplayViewModel`'s `commonTest` covers them. The Verify
-  line is in `docs/CHECKLIST_ARCHIVE.md` M3.6. M4.6 was closed without running them
-  (user, 2026-09-26), so they are still open.

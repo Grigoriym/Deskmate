@@ -511,7 +511,5 @@ Shared context for all of M4 (re-verify, don't re-derive):
   stale within ~10 s and logs one `rediscover()`; replug → fresh data without an app restart;
   app in the background → no polls in logcat. Then delete the M3.6 revisit entry. The user
   confirms.
-  Note: **closed without running its Verify** (user, 2026-09-26: "I will use the app, and notify
-  of any issues"). M4.5 had already shown the app-poll path on the phone. Not run: the 15 min
-  worker run, the refresh button and tap on the phone, and the M3.6 unplug/background checks. The
-  M3.6 revisit entry stays open for that reason.
+  Note: closed by the user, 2026-09-26: they use the app daily and report issues. The M3.6
+  revisit entry is closed with it.
