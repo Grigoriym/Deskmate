@@ -27,7 +27,7 @@ plan does not copy it. Facts that shape the app's design:
 - `POST /api/screen?go=…`, `POST /api/panel?set=…` — queued, applied within ~300 ms, up to
   ~10 s during a device fetch. Re-read status ~150 ms later.
 - Small server: one request at a time, ~7 connections. Short timeouts (3-5 s), no
-  parallel requests, poll ≥ 1 s (5 s while visible, 30-60 min+ for the widget).
+  parallel requests, poll ≥ 1 s (5 s while visible, 30-60 s or longer for a background widget).
 - Timeout / refused = "display offline": keep the last data, mark it stale.
 - Unknown JSON fields must be ignored (`ignoreUnknownKeys`).
 - Parsing fixture: `../esp32-desk-display/docs/api/status.example.json`. The firmware has a
