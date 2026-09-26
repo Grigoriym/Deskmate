@@ -23,8 +23,8 @@ internal class DeskHostProbe(engine: HttpClientEngine) : HostProbe {
         try {
             api.status() is DeskResult.Success
         } catch (_: IllegalArgumentException) {
-            // Not the display: a `200` body that isn't its JSON (`SerializationException`), or a
-            // manual address that isn't a valid URL.
+            // A manual address that isn't a valid URL. A `200` body that isn't the display's JSON
+            // is `DeskResult.Undecodable`, so not a `Success` either.
             false
         }
     }

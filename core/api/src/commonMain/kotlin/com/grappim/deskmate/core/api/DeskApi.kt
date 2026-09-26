@@ -12,6 +12,7 @@ import io.ktor.http.isSuccess
 import kotlinx.coroutines.sync.Mutex
 import kotlinx.coroutines.sync.withLock
 import kotlinx.io.IOException
+import kotlinx.serialization.SerializationException
 
 private const val CONNECT_TIMEOUT_MS = 3_000L
 private const val REQUEST_TIMEOUT_MS = 5_000L
@@ -59,6 +60,8 @@ class DeskApi(engine: HttpClientEngine, private val baseUrl: () -> String) {
                 } else {
                     DeskResult.HttpError(response.status.value, body)
                 }
+            } catch (e: SerializationException) {
+                DeskResult.Undecodable(e)
             } catch (e: IOException) {
                 // Ktor's timeout exceptions are IOExceptions too, next to refused and unknown host.
                 DeskResult.Offline(e)

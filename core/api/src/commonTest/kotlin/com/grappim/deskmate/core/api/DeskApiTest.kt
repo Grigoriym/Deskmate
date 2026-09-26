@@ -113,6 +113,13 @@ class DeskApiTest {
     }
 
     @Test
+    fun `a 200 whose body does not decode is undecodable`() = runTest {
+        val api = api { respond("<html>captive portal</html>") }
+
+        assertIs<DeskResult.Undecodable>(api.status())
+    }
+
+    @Test
     fun `no answer within the timeout is offline`() = runTest {
         val api = api {
             delay(60_000)

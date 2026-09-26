@@ -8,6 +8,15 @@ kotlin {
     sourceSets {
         commonMain.dependencies {
             implementation(libs.grappim.kit.uikit)
+            implementation(projects.feature.display.domain)
+            implementation(projects.core.discovery)
+        }
+        commonTest {
+            // core:api's `status.example.json` fixture, compiled here too (one copy, three users).
+            kotlin.srcDir("../../../core/api/src/commonTestFixture/kotlin")
+            dependencies {
+                implementation(libs.ktor.client.mock)
+            }
         }
     }
 }

@@ -9,7 +9,7 @@ kotlin {
             api(projects.core.api)
         }
         commonTest {
-            // core:api's `status.example.json` fixture, compiled here too (one copy, two users).
+            // core:api's `status.example.json` fixture, compiled here too (one copy, three users).
             kotlin.srcDir("../../../core/api/src/commonTestFixture/kotlin")
             dependencies {
                 implementation(libs.kotlinx.serialization.json)

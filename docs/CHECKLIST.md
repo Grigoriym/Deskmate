@@ -1,6 +1,6 @@
 # Deskmate checklist
 
-**Current step:** M3.4 — M3.3 done (BVG in the domain model), 2026-09-26.
+**Current step:** M3.5 — M3.4 done (poll loop and commands), 2026-09-26.
 
 ## How to use this
 
@@ -104,7 +104,7 @@ Shared context for all of M3 (re-verify, don't re-derive):
   `Bvg.hint` is `null` exactly when no departure is left (empty or all uncatchable; the panel
   shows `NO TRAINS`). The hint uses `in_min`; the panel uses its own clock, same meaning.
 
-- [ ] **M3.4** — Poll loop and commands, in `feature:display:ui` (`commonMain`; a `ViewModel`
+- [x] **M3.4** — Poll loop and commands, in `feature:display:ui` (`commonMain`; a `ViewModel`
   or a plain state holder, decide in the step and note why). One UI state `StateFlow`:
   locator state, last `DisplayStatus`, stale flag.
   - Poll `status()` every 5 s, only while the screen is visible, and only in `Found`.
@@ -120,6 +120,12 @@ Shared context for all of M3 (re-verify, don't re-derive):
   and a real `HostLocator` over fakes: 5 s cadence; no call outside `Found`; offline → stale +
   one `rediscover()`; recovery clears stale; undecodable body → loop still polls; a command →
   one re-read ~150 ms later; polling stops when not visible. `./gradlew build` green.
+  Note: a `ViewModel` (`DisplayViewModel`): commands and `rediscover()` need a scope that outlives a
+  rotation. "Visible" = `uiState` has a collector (`WhileSubscribed()`, no stop timeout); M3.5 must
+  collect it with `collectAsStateWithLifecycle`. The undecodable body is a new
+  `DeskResult.Undecodable`, caught in `DeskApi.call()`. The ViewModel catches `DeskApi`'s
+  `IllegalStateException`: the host state can leave `Found` while a call waits for `DeskApi`'s lock.
+  Not in Koin yet: M3.5 wires it (and `feature:display:ui` into `composeApp`).
 
 - [ ] **M3.5** — Status screen. Replaces the M2.4 proof screen in `DeskmateAppContent`.
   - One card per section, each `null`-safe on its own; `null` shows "no data yet".
