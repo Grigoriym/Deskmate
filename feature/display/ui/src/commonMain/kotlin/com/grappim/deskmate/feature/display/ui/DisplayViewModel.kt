@@ -24,6 +24,7 @@ import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.transformLatest
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
+import org.koin.core.annotation.KoinViewModel
 
 /** API.md "Client guidelines": every 5 s while visible. */
 private const val POLL_INTERVAL_MS = 5_000L
@@ -37,6 +38,7 @@ private const val REREAD_DELAY_MS = 150L
  * A `ViewModel`, not a plain state holder: commands and `rediscover()` need a scope that outlives
  * a recomposition and a rotation, and the last status must survive a rotation too.
  */
+@KoinViewModel
 class DisplayViewModel(private val locator: HostLocator, private val api: DeskApi) : ViewModel() {
     private val content = MutableStateFlow(DisplayUiState())
     private var rediscovery: Job? = null
@@ -53,6 +55,14 @@ class DisplayViewModel(private val locator: HostLocator, private val api: DeskAp
     fun screen(go: ScreenCommand) = command { screen(go) }
 
     fun panel(set: PanelCommand) = command { panel(set) }
+
+    /**
+     * The retry in the not-found state. `locate()`, not `rediscover()`: the saved host can be a
+     * manual IP that NSD and `desk.local` never find.
+     */
+    fun retry() {
+        viewModelScope.launch { locator.locate() }
+    }
 
     /** [ip] without a scheme, for example `192.168.0.147`. A rejected IP shows in [uiState]. */
     fun setManual(ip: String) {

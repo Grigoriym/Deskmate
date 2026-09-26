@@ -859,7 +859,7 @@ Compose:
         # -- You can optionally have a list of types to be treated as lambdas (e.g. typedefs or fun interfaces not picked up automatically)
         # treatAsLambda: MyLambdaType
     CompositionLocalAllowlist:
-        active: false
+        active: true
         # -- You can optionally define a list of CompositionLocals that are allowed here
         allowedCompositionLocals:
     CompositionLocalNaming:
@@ -888,9 +888,8 @@ Compose:
         # contentEmitters: MyComposable,MyOtherComposable
         # -- You can add composables here that you don't want to count as content emitters (e.g. custom dialogs or modals)
         # contentEmittersDenylist: MyNonEmitterComposable
-    ## todo investigate it
     LambdaParameterInRestartableEffect:
-        active: false
+        active: true
         # -- You can optionally have a list of types to be treated as lambdas (e.g. typedefs or fun interfaces not picked up automatically)
         # treatAsLambda: MyLambdaType
     Material2:
@@ -906,7 +905,7 @@ Compose:
         # -- You can optionally add your own Modifier types
         # customModifiers: BananaModifier,PotatoModifier
     ModifierMissing:
-        active: false
+        active: true
         # -- You can optionally control the visibility of which composables to check for here
         # -- Possible values are: `only_public`, `public_and_internal` and `all` (default is `only_public`)
         # checkModifiersForVisibility: only_public
@@ -930,9 +929,8 @@ Compose:
         # customModifiers: BananaModifier,PotatoModifier
     ModifierWithoutDefault:
         active: true
-    # todo investigate it
     MultipleEmitters:
-        active: false
+        active: true
         # -- You can optionally add your own composables here that will count as content emitters
         # contentEmitters: MyComposable,MyOtherComposable
         # -- You can add composables here that you don't want to count as content emitters (e.g. custom dialogs or modals)

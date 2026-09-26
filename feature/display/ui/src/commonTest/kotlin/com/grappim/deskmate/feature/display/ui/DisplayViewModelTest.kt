@@ -206,6 +206,23 @@ class DisplayViewModelTest {
         assertEquals(HostState.Found(NEW_HOST), vm.uiState.value.host)
     }
 
+    @Test
+    fun `retry tries the saved host again`() = runTest {
+        // A saved manual IP: NSD and `desk.local` find nothing.
+        store.host = HOST
+        val vm = viewModel()
+        collect(vm)
+        locator.locate()
+        runCurrent()
+        assertEquals(HostState.NotFound, vm.uiState.value.host)
+
+        probe.up += HOST
+        vm.retry()
+        runCurrent()
+
+        assertEquals(HostState.Found(HOST), vm.uiState.value.host)
+    }
+
     private suspend fun TestScope.foundViewModel(): DisplayViewModel {
         store.host = HOST
         probe.up += HOST

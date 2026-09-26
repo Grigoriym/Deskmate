@@ -5,6 +5,7 @@ import com.grappim.deskmate.core.api.DeskApi
 import com.grappim.deskmate.core.discovery.DiscoveryModule
 import com.grappim.deskmate.core.discovery.HostLocator
 import com.grappim.deskmate.core.discovery.HostState
+import com.grappim.deskmate.feature.display.ui.DisplayUiModule
 import io.ktor.client.engine.HttpClientEngine
 import org.koin.core.annotation.ComponentScan
 import org.koin.core.annotation.Configuration
@@ -17,7 +18,7 @@ import org.koin.core.annotation.Single
  * compilation. Other Gradle modules' `@Module`s go into the explicit `includes`. [ApiModule] and
  * [DiscoveryModule] are `androidMain`-only; `commonMain` compiles against the Android variant.
  */
-@Module(includes = [ApiModule::class, DiscoveryModule::class])
+@Module(includes = [ApiModule::class, DiscoveryModule::class, DisplayUiModule::class])
 @Configuration
 @ComponentScan("com.grappim.deskmate.composeapp")
 class AppModule {

@@ -10,6 +10,7 @@ kotlin {
             implementation(libs.grappim.kit.uikit)
             implementation(projects.feature.display.domain)
             implementation(projects.core.discovery)
+            implementation(projects.strings)
         }
         commonTest {
             // core:api's `status.example.json` fixture, compiled here too (one copy, three users).

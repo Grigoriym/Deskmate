@@ -11,17 +11,24 @@ technique lives in the skill itself, not here — this file is only what's true 
 - Activity: `com.grappim.deskmate.MainActivity`
 - Build and install: `./gradlew :androidApp:assembleDebug`, then
   `adb -s emulator-5554 install -r androidApp/build/outputs/apk/debug/androidApp-debug.apk`.
-- Backend: the real ESP32 display on the home LAN. The emulator does not reach it; the
-  device contract is `../esp32-desk-display/docs/API.md`.
+- Backend: the real ESP32 display on the home LAN; the device contract is
+  `../esp32-desk-display/docs/API.md`. NSD and `desk.local` fail on the emulator, but a
+  manual IP works: the emulator reaches the display through the host's network (M3.5,
+  `192.168.0.147`). Find the IP with `getent hosts desk.local` on the host.
 
 ## App-specific gotchas
 
 - The emulator and `adb` need the Bash sandbox disabled.
 - The user's physical phone can be attached over USB at the same time. Always pass
   `-s emulator-5554` to `adb`; a bare `adb` fails with "more than one device".
-- The screen (M2.4 proof, until M3) shows the discovery state. On the emulator it ends at
-  "Display not found", because the emulator can't reach the home LAN. That still means the
-  Koin graph started; a crash at launch with a Koin error means it did not.
+- On launch the emulator ends at "Display not found" (no NSD, no `desk.local`). That still
+  means the Koin graph started; a crash at launch with a Koin error means it did not. Enter the
+  display's IP in the manual field and press Enter (`ImeAction.Go` submits) to get real data.
+- Offline test: `adb -s emulator-5554 shell cmd connectivity airplane-mode enable`. The
+  offline banner shows and logcat tag `HostLocator` logs one search. Turn it off, then "Search
+  again" finds the saved manual IP.
+- Do not send panel on/off/toggle and do not restart the real display (user, 2026-09-26).
+  Reading `/api/status` is fine.
 - To test discovery, use the phone: logcat tag `HostLocator` names the path that won. To
   plant a wrong saved host, write a Preferences protobuf to
   `files/datastore/discovery.preferences_pb` with `run-as com.grappim.deskmate.debug`.

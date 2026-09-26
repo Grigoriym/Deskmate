@@ -1,0 +1,116 @@
+<resources>
+    <!-- Host state -->
+    <string name="host_searching">Searching for the display…</string>
+    <string name="host_found">Display at %1$s</string>
+    <string name="not_found_title">Display not found</string>
+    <string name="not_found_body">Check that the phone is on the same WiFi as the display.</string>
+    <string name="not_found_retry">Search again</string>
+    <string name="manual_ip_label">Display IP address</string>
+    <string name="manual_ip_placeholder">For example 192.168.0.147</string>
+    <string name="manual_ip_connect">Connect</string>
+    <string name="manual_ip_rejected">No display answered at this address.</string>
+
+    <!-- Data state -->
+    <string name="stale">The display is offline. This is the last data it sent.</string>
+    <string name="error_http">The display answered with error %1$d: %2$s</string>
+    <string name="error_undecodable">The display answered, but the app cannot read the data.</string>
+    <string name="no_data">No data yet</string>
+
+    <!-- Clock -->
+    <string name="clock_title">Display clock</string>
+    <string name="clock_value">%1$s, %2$s</string>
+    <string name="clock_not_synced">The display clock is not synced yet.</string>
+
+    <!-- Controls -->
+    <string name="controls_title">Panel</string>
+    <string name="controls_current">Screen: %1$s. %2$s</string>
+    <string name="panel_state_on">Panel is on.</string>
+    <string name="panel_state_off">Panel is off.</string>
+    <string name="screen_home">Home</string>
+    <string name="screen_outdoor">Outdoor</string>
+    <string name="screen_air">Air</string>
+    <string name="screen_indoor">Indoor</string>
+    <string name="screen_bvg">BVG</string>
+    <string name="screen_unknown">Unknown</string>
+    <string name="screen_prev">Previous</string>
+    <string name="screen_next">Next</string>
+    <string name="panel_on">On</string>
+    <string name="panel_off">Off</string>
+    <string name="panel_toggle">Toggle</string>
+
+    <!-- Outdoor -->
+    <string name="outdoor_title">Outdoor</string>
+    <string name="outdoor_temp">%1$d °C, %2$s</string>
+    <string name="weather_sun">sunny</string>
+    <string name="weather_cloud">cloudy</string>
+    <string name="weather_rain">rain</string>
+    <string name="weather_snow">snow</string>
+    <string name="weather_storm">storm</string>
+    <string name="outdoor_wind_uv">Wind %1$d km/h, UV max %2$d</string>
+    <string name="outdoor_sun">Sunrise %1$s, sunset %2$s</string>
+    <string name="rain_none">No rain in the next 12 h</string>
+    <string name="rain_starts">Rain from %1$s</string>
+    <string name="rain_until">Rain until %1$s</string>
+    <string name="rain_all_window">Rain for the next 12 h</string>
+
+    <!-- Indoor -->
+    <string name="indoor_title">Indoor</string>
+    <string name="indoor_temp">%1$s °C</string>
+    <string name="indoor_humidity">Humidity %1$s %</string>
+    <string name="indoor_pressure">Pressure %1$s hPa</string>
+
+    <!-- CO2 -->
+    <string name="co2_title">CO2</string>
+    <string name="co2_value">%1$d ppm: %2$s</string>
+    <string name="co2_fresh">fresh</string>
+    <string name="co2_fine">fine</string>
+    <string name="co2_stuffy">stuffy, time to air the room</string>
+    <string name="co2_open_window">open a window now</string>
+
+    <!-- Air -->
+    <string name="air_title">Air quality</string>
+    <string name="air_aqi">AQI %1$d: %2$s</string>
+    <string name="aqi_good">good</string>
+    <string name="aqi_fair">fair</string>
+    <string name="aqi_moderate">moderate</string>
+    <string name="aqi_poor">poor</string>
+    <string name="aqi_very_poor">very poor</string>
+    <string name="aqi_extreme">extreme</string>
+    <string name="aqi_unknown">unknown</string>
+    <string name="pollen_line">%1$s: %2$s</string>
+    <string name="pollen_alder">Alder</string>
+    <string name="pollen_birch">Birch</string>
+    <string name="pollen_grass">Grass</string>
+    <string name="pollen_mugwort">Mugwort</string>
+    <string name="pollen_ragweed">Ragweed</string>
+    <string name="pollen_none">none</string>
+    <string name="pollen_low">low</string>
+    <string name="pollen_medium">medium</string>
+    <string name="pollen_high">high</string>
+
+    <!-- Warning -->
+    <string name="warning_title">Weather warning</string>
+    <string name="warning_unknown">Unknown: the last check failed.</string>
+    <string name="warning_none">No warning for Berlin.</string>
+    <string name="warning_started">%1$s (%2$s), since %3$s</string>
+    <string name="warning_upcoming">%1$s (%2$s), from %3$s</string>
+    <string name="warning_count">Warnings in effect or announced: %1$d</string>
+    <string name="severity_minor">minor</string>
+    <string name="severity_moderate">moderate</string>
+    <string name="severity_severe">severe</string>
+    <string name="severity_extreme">extreme</string>
+    <string name="severity_unknown">unknown severity</string>
+
+    <!-- Next holiday -->
+    <string name="holiday_title">Next holiday</string>
+    <string name="holiday_value">%1$s, %2$s</string>
+    <string name="holiday_today">%1$s, today</string>
+
+    <!-- BVG -->
+    <string name="bvg_title">U-Bahn</string>
+    <string name="bvg_no_trains">No trains</string>
+    <string name="bvg_departure">%1$s %2$s, %3$s (in %4$d min)</string>
+    <string name="bvg_leave_in">Leave in %1$d min</string>
+    <string name="bvg_go_now">Go now</string>
+    <string name="bvg_hurry">Hurry</string>
+</resources>

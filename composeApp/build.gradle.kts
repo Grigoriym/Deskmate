@@ -9,6 +9,7 @@ kotlin {
         commonMain.dependencies {
             implementation(projects.core.api)
             implementation(projects.core.discovery)
+            implementation(projects.feature.display.ui)
             // `DeskHostProbe` builds a `DeskApi` on the shared `HttpClientEngine`.
             implementation(libs.ktor.core)
         }

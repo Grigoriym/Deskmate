@@ -1,6 +1,6 @@
 # Deskmate checklist
 
-**Current step:** M3.5 — M3.4 done (poll loop and commands), 2026-09-26.
+**Current step:** M3.6 — M3.5 done (status screen), 2026-09-26.
 
 ## How to use this
 
@@ -127,7 +127,7 @@ Shared context for all of M3 (re-verify, don't re-derive):
   `IllegalStateException`: the host state can leave `Found` while a call waits for `DeskApi`'s lock.
   Not in Koin yet: M3.5 wires it (and `feature:display:ui` into `composeApp`).
 
-- [ ] **M3.5** — Status screen. Replaces the M2.4 proof screen in `DeskmateAppContent`.
+- [x] **M3.5** — Status screen. Replaces the M2.4 proof screen in `DeskmateAppContent`.
   - One card per section, each `null`-safe on its own; `null` shows "no data yet".
   - Stale data visibly marked; clock-not-synced visibly marked.
   - Not-found state: retry (`rediscover()`) and the manual IP field (`setManual`).
@@ -139,9 +139,18 @@ Shared context for all of M3 (re-verify, don't re-derive):
   **Verify:** `./gradlew build` green, `KoinGraphTest` passes. On the emulator
   (`emulator-testing` skill): the not-found state shows, the manual IP field works if the
   display is reachable from it, and each card renders (screenshot + `uiautomator dump`).
+  Note: retry calls `locate()`, not `rediscover()`: `rediscover()` skips the saved host, so a
+  saved manual IP (no NSD, no `desk.local`) would never come back. `DisplayViewModel.retry()`,
+  tested. All four detekt Compose rules are on, with no finding (a planted violation confirmed
+  they run). Strings: `strings` module, `Res` in `com.grappim.deskmate.strings.generated.resources`.
+  Emulator: the manual IP reached the live display; every card rendered real data (`bvg` was
+  `null`, so only its "no data yet" path). Airplane mode: stale banner and one search. No
+  screen/panel command was sent from the emulator: M3.6 checks them (and the user said: no
+  panel on/off, no restart of the display without asking).
 
 - [ ] **M3.6** — Real-device check, on the user's phone on the home WiFi. Nothing to build
-  unless it finds a bug.
+  unless it finds a bug. Ask the user before panel off/on and before unplugging the display
+  (user, 2026-09-26: "don't restart the device or on/off it").
   **Verify:** every section shows the same values as `curl http://desk.local/api/status`; each
   screen button changes the panel; panel off/on works; the user confirms. Unplug the display →
   data marked stale within ~10 s, logcat shows one `rediscover()`; plug it back → data fresh
