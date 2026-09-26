@@ -1,6 +1,6 @@
 # Deskmate checklist
 
-**Current step:** M0.6 — M0.4 done 2026-09-26 (Koin skeleton, `KoinGraphTest`); M0.5 was done early.
+**Current step:** M0.7 — M0.6 done 2026-09-26 (repo `Grigoriym/Deskmate`, public; CI green).
 
 ## How to use this
 
@@ -18,7 +18,7 @@ Each step is done in **one fresh session with zero memory of prior sessions**:
 ## Branches and PRs
 
 - **Pure `master`, no branches, no PRs** (user, 2026-09-26: "for now pure master"). One
-  commit per step, pushed to `master` straight away once the GitHub repo exists (M0.6).
+  commit per step, pushed to `master` (`https://github.com/Grigoriym/Deskmate`) straight away.
   Committing and pushing are one action here — don't hold a commit back "until told to push".
   Only switch to branches/PRs when the user says so, for the scope they name.
 
@@ -115,9 +115,16 @@ Ground rules (the *why* is in `docs/IMPLEMENTATION_PLAN.md`):
   **Verify:** no template placeholder left (`grep -n '<[A-Z][A-Z]' CLAUDE.md` empty; `<N>` in the
   workflow line is intentional). Confirmed.
 
-- [ ] **M0.6** — GitHub repo (ask the user: name, public/private) + CI: port
+- [x] **M0.6** — GitHub repo (ask the user: name, public/private) + CI: port
   `wayprint/.github/workflows/ci.yml` (build, ktlint, detekt, tests). Push `master`.
-  **Verify:** first CI run on `master` is green.
+  **Note:** user chose `Grigoriym/Deskmate`, public (capitalised like Wayprint/Wallosmobile).
+  Default branch on GitHub is `master`. The workflow drops wayprint's signing secrets, keystore
+  restore and fdroid/gplay assemble steps; `:androidApp:assembleDebug` replaces them.
+  **Note:** two commits, not one: the Verify needs the pushed workflow to run first. The tick
+  commit is docs-only, so `paths-ignore` skips CI for it.
+  **Verify:** first CI run on `master` is green. Confirmed: run
+  [36249336150](https://github.com/Grigoriym/Deskmate/actions/runs/36249336150), 5m26s;
+  its log shows `:composeApp:testAndroidHostTest` ran (tests were not skipped).
 
 - [ ] **M0.7** — Tell the other projects the app exists: update the `deskmate` paragraph in
   `../grappim-watcher/CLAUDE.md` (added 2026-09-26, planning-only) with the repo URL and
