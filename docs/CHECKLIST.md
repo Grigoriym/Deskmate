@@ -1,6 +1,6 @@
 # Deskmate checklist
 
-**Current step:** M0.2 — M0.1 done 2026-09-26 (git repo, build-logic, root Gradle files).
+**Current step:** M0.3 — M0.2 done 2026-09-26 (`androidApp` + `composeApp` skeletons, placeholder screen).
 
 ## How to use this
 
@@ -59,11 +59,20 @@ Ground rules (the *why* is in `docs/IMPLEMENTATION_PLAN.md`):
   **Verify:** `./gradlew :build-logic:convention:build` and `./gradlew help` succeed. Both
   confirmed green; the built jar declares all seven `deskmate.*` plugin ids.
 
-- [ ] **M0.2** — `androidApp` + `composeApp` skeletons with a placeholder screen.
+- [x] **M0.2** — `androidApp` + `composeApp` skeletons with a placeholder screen.
   `applicationId com.grappim.deskmate`. Manifest: `INTERNET`, `ACCESS_NETWORK_STATE`,
   `usesCleartextTraffic="true"`.
+  **Note:** the three gaps named in M0.1's note were filled here: root `build.gradle.kts`
+  (from wayprint), `config/detekt/detekt.yml` (wayprint's current copy, which already
+  excludes `androidHostTest`) and `config/compose/stability_config.conf`. Catalog gained
+  `app-pkg`, `version-code`, `version-name` and `androidx-activity-compose`.
+  **Note:** no launcher icon yet (wayprint's icons are its own branding); the manifest has no
+  `android:icon`, so Android shows its default icon.
   **Verify:** `./gradlew :androidApp:assembleDebug` succeeds; the APK installs and shows the
   placeholder on an emulator (`emulator-testing` skill; create `docs/EMULATOR_TESTING.md`).
+  Confirmed on `Medium_Phone_API_36.1`: "Deskmate" text rendered (screenshot + `uiautomator
+  dump`), both permissions granted, `usesCleartextTraffic=true` in the APK manifest.
+  `ktlintCheck` and `detekt` green.
 
 - [ ] **M0.3** — Empty module skeletons from IMPLEMENTATION_PLAN.md §4 (`core:api`,
   `core:discovery`, `feature:display:domain`, `feature:display:ui`, `widget`, `strings`), each

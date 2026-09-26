@@ -1,4 +1,8 @@
 [versions]
+version-code = "1"
+version-name = "0.1.0"
+app-pkg = "com.grappim.deskmate"
+
 #noinspection UnusedVersionCatalogEntry
 compileSdk = "37"
 #noinspection UnusedVersionCatalogEntry
@@ -40,6 +44,9 @@ koin-annotations = "4.2.2"
 # https://github.com/InsertKoinIO/koin-compiler-plugin
 koin-plugin = "1.2.1"
 
+# https://developer.android.com/jetpack/androidx/releases/activity
+activity-compose = "1.13.0"
+
 # https://github.com/JetBrains/compose-multiplatform/releases
 jetbrainsComposeMultiplatform = "1.12.0"
 jetbrainsNavigationEvent = "1.1.0"
@@ -53,6 +60,8 @@ jetbrainsNav3 = "1.1.1"
 grappimKit = "0.1.7"
 
 [libraries]
+androidx-activity-compose = { module = "androidx.activity:activity-compose", version.ref = "activity-compose" }
+
 jetbrains-compose-navigationevent = { module = "org.jetbrains.androidx.navigationevent:navigationevent-compose", version.ref = "jetbrainsNavigationEvent" }
 jetbrains-compose-ui-tooling = { module = "org.jetbrains.compose.ui:ui-tooling", version.ref = "jetbrainsComposeMultiplatform" }
 jetbrains-compose-ui-tooling-preview = { module = "org.jetbrains.compose.ui:ui-tooling-preview", version.ref = "jetbrainsComposeMultiplatform" }

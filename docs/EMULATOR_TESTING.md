@@ -1,0 +1,25 @@
+# Deskmate — Emulator testing
+
+Project-specific facts for the `emulator-testing` skill. Generic adb/uiautomator
+technique lives in the skill itself, not here — this file is only what's true about
+*this* app.
+
+## Device facts
+
+- AVD: `Medium_Phone_API_36.1` (also available: `Medium_Tablet`). Screen 1080x2400.
+- Package id: `com.grappim.deskmate.debug` (debug build type adds `.debug`; no flavors).
+- Activity: `com.grappim.deskmate.MainActivity`
+- Build and install: `./gradlew :androidApp:assembleDebug`, then
+  `adb -s emulator-5554 install -r androidApp/build/outputs/apk/debug/androidApp-debug.apk`.
+- Backend: the real ESP32 display on the home LAN. The emulator does not reach it; the
+  device contract is `../esp32-desk-display/docs/API.md`.
+
+## App-specific gotchas
+
+- The emulator and `adb` need the Bash sandbox disabled.
+- `local.properties` (`sdk.dir=/home/gregory/Android/Sdk`) is gitignored. A fresh clone
+  needs it before any Android Gradle task configures.
+- No launcher icon yet: the app shows the default Android icon in the app drawer.
+- To confirm `usesCleartextTraffic` in the built APK, read the manifest with
+  `~/Android/Sdk/build-tools/<ver>/aapt2 dump xmltree --file AndroidManifest.xml <apk>`.
+  `dumpsys package` does not print that flag.
