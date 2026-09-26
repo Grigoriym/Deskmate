@@ -24,3 +24,8 @@ cold session can act on it. Delete an entry when it's fixed.
 - 2026-09-26 (M1.2) — `core/api/build.gradle.kts` declares `grappim-kit-coroutines`, but
   nothing in `core:api` uses it (M0 added it for `DeskApi` dispatchers; Ktor's engine does its
   own threading). Remove it, or keep it if M2/M3 put something in `core:api` that needs it.
+- 2026-09-26 (M1.3) — Live display at 17:05: `screen` went home → bvg → indoor → home → bvg
+  within about a minute, with no screen command sent. In the same window one
+  `POST /api/panel?set=toggle` returned `{"ok":true}` but `panel_on` stayed `true` 1.5 s later.
+  Cause not confirmed: someone at the knob, or knob noise / a firmware issue. If it happens
+  again with nobody at the knob, report it in `../esp32-desk-display`, not here.

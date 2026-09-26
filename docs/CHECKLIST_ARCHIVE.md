@@ -105,3 +105,50 @@ Finished milestones, moved here verbatim from `docs/CHECKLIST.md`.
   points to this checklist's banner for status instead of copying a step number.
   **Verify:** both pointers name the right path/repo URL. Confirmed: the URL returns 200, and
   `../deskmate` resolves from both repos.
+
+## M1 — API client (`core:api`)
+
+- [x] **M1.1** — DTOs for `/api/status`, mirroring API.md field-for-field; every section
+  nullable; `ignoreUnknownKeys`. Copy `status.example.json` into test resources, with a comment
+  naming its source path and the `esp32-desk-display` commit it came from.
+  **Note:** the fixture is a Kotlin raw string (`core/api/src/commonTest/.../StatusExampleJson.kt`),
+  not a `.json` resource file. Reading a file from `commonTest` needs a JVM-only API, and plan §4
+  keeps `core:api` common. JSON also can't hold the source comment. The string is byte-identical
+  to the upstream file at esp32-desk-display `cf9740c` (checked with `diff`).
+  **Note:** sections are nullable but have no default: API.md says the key is always sent, as
+  `null` when there is no data. Only `warning`'s fields after `count` default to `null`, because
+  they are absent when `count` is 0 (a fourth test covers that). Values stay raw strings
+  (`screen`, `severity`, times); typing them is domain work. `DeskJson` holds the one `Json`
+  config. `core:api`'s `Placeholder` is deleted.
+  **Verify:** a test decodes the fixture and asserts every field; a second test decodes it
+  with every section set to `null`; a third decodes it with an extra unknown field. Confirmed:
+  `StatusDtoTest` 4/4 green, `./gradlew build` green. Negative check: with
+  `ignoreUnknownKeys = false` only the unknown-field test failed, then the setting was restored.
+
+- [x] **M1.2** — `DeskApi`: `status()`, `screen(go)`, `panel(set)` with typed values (no raw
+  strings at call sites). 3-5 s timeouts, requests serialised (one at a time), results as a
+  sealed type: success / HTTP error (status + body) / offline (timeout, refused, unknown host).
+  **Note:** `DeskApi(engine, baseUrl: () -> String)` builds its own `HttpClient`, so the tests
+  run the real timeout config (connect 3 s, request 5 s). `baseUrl` is read on every call,
+  because M2's discovery can change the host. Typed values are `ScreenCommand` and
+  `PanelCommand`. Offline = any `kotlinx.io.IOException` (Ktor's timeouts included). Not caught:
+  a `200` whose body does not decode throws `SerializationException`. API.md's host test keeps
+  the fixture equal to the firmware output, so this is a firmware bug, not a case the sealed
+  type names. No Koin wiring yet: there is no host source until M2. New catalog entry:
+  `ktor-client-mock` (test only). `DeskApi` needs no dispatcher from `grappim-kit-coroutines`
+  (the engine does its own I/O threading); M0 added that dependency for it, and it stays unused.
+  **Verify:** tests against Ktor `MockEngine` for each outcome, incl. 400/405/500 bodies and a
+  timeout; a test proves two concurrent calls don't overlap. Confirmed: `DeskApiTest` 10/10,
+  `./gradlew build` green. Negative checks: without the `Mutex` the overlap test failed
+  (max in flight 2); with a 600 s request timeout the timeout test failed.
+
+- [x] **M1.3** — Real-device smoke test: point the client at the actual display.
+  **Note:** run as a throwaway `androidHostTest` in `core:api` (`DeskApi` + OkHttp engine),
+  deleted afterwards; nothing committed but this tick. `desk.local` resolved on the dev
+  machine (Linux) to `192.168.0.147`. The first `Toggle` returned `Success` but `panel_on` did
+  not change 1.5 s later; in the same minute `screen` changed with no command from the app
+  (see `docs/revisit.md`). The next toggles (3 s wait) flipped the panel each time.
+  **Verify:** status parses from `http://desk.local` (or the IP) and a `panel?set=toggle`
+  visibly flips the panel; the user confirms. Confirmed: `status()` decoded every section
+  (`bvg` was `null`); `panel(Toggle)` flipped `panel_on` `true → false`, and the user saw
+  the panel go dark. The panel was turned back on afterwards.
