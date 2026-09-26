@@ -1,6 +1,8 @@
 package com.grappim.deskmate.feature.display.domain
 
+import com.grappim.deskmate.core.api.dto.BvgDto
 import com.grappim.deskmate.core.api.dto.Co2Dto
+import com.grappim.deskmate.core.api.dto.DepartureDto
 import com.grappim.deskmate.core.api.dto.RainDto
 import com.grappim.deskmate.core.api.dto.StatusDto
 import com.grappim.deskmate.core.api.dto.WarningDto
@@ -23,6 +25,16 @@ class StatusMapperTest {
         requireNotNull(example.copy(outdoor = outdoor().copy(weatherCode = code)).toDisplayStatus().outdoor).weather
 
     private fun mapCo2(ppm: Int): Co2Band = requireNotNull(example.copy(co2 = Co2Dto(ppm)).toDisplayStatus().co2).band
+
+    private fun departure(inMin: Int) =
+        DepartureDto(line = "U5", direction = "HAUPTBAHNHOF", time = "18:00", inMin = inMin)
+
+    /** walk_min 6, walk_comfort 11, as in the example. */
+    private fun mapBvg(vararg inMins: Int): Bvg = requireNotNull(
+        example.copy(bvg = BvgDto(walkMin = 6, walkComfort = 11, departures = inMins.map(::departure)))
+            .toDisplayStatus()
+            .bvg
+    )
 
     private fun mapPollen(grains: Int): PollenLevel {
         val pollen = air().pollen.copy(
@@ -72,7 +84,12 @@ class StatusMapperTest {
                 started = false,
                 onset = "19:00"
             ),
-            nextHoliday = NextHoliday(name = "GERMAN UNITY DAY", date = "2026-10-03", isToday = false)
+            nextHoliday = NextHoliday(name = "GERMAN UNITY DAY", date = "2026-10-03", isToday = false),
+            // walk_min 6: the 17:45 train (in_min 3) is dropped. 13 - walk_comfort 11 = 2.
+            bvg = Bvg(
+                departures = listOf(Departure(line = "U5", direction = "HAUPTBAHNHOF", time = "17:55", inMin = 13)),
+                hint = LeaveHint.LeaveIn(2)
+            )
         )
 
         assertEquals(expected, example.toDisplayStatus())
@@ -313,5 +330,55 @@ class StatusMapperTest {
         val status = example.copy(nextHoliday = null).toDisplayStatus()
 
         assertEquals(example.toDisplayStatus().copy(nextHoliday = null), status)
+    }
+
+    @Test
+    fun `a null bvg maps to null and leaves the rest`() {
+        val status = example.copy(bvg = null).toDisplayStatus()
+
+        assertEquals(example.toDisplayStatus().copy(bvg = null), status)
+    }
+
+    // BVG, with walk_min 6 and walk_comfort 11
+
+    @Test
+    fun `leave in while in_min - walk_comfort is positive`() {
+        assertEquals(LeaveHint.LeaveIn(1), mapBvg(12).hint)
+    }
+
+    @Test
+    fun `go now when in_min - walk_comfort is 0`() {
+        assertEquals(LeaveHint.GoNow, mapBvg(11).hint)
+    }
+
+    @Test
+    fun `hurry when in_min - walk_comfort is below 0`() {
+        assertEquals(LeaveHint.Hurry, mapBvg(10).hint)
+    }
+
+    @Test
+    fun `in_min equal to walk_min is catchable`() {
+        val bvg = mapBvg(6)
+
+        assertEquals(listOf(6), bvg.departures.map { it.inMin })
+        assertEquals(LeaveHint.Hurry, bvg.hint)
+    }
+
+    @Test
+    fun `in_min below walk_min is dropped and the hint is for the next one`() {
+        val bvg = mapBvg(5, 12, 20)
+
+        assertEquals(listOf(12, 20), bvg.departures.map { it.inMin })
+        assertEquals(LeaveHint.LeaveIn(1), bvg.hint)
+    }
+
+    @Test
+    fun `an empty list has no departures and no hint`() {
+        assertEquals(Bvg(departures = emptyList(), hint = null), mapBvg())
+    }
+
+    @Test
+    fun `a list with no catchable departure has no departures and no hint`() {
+        assertEquals(Bvg(departures = emptyList(), hint = null), mapBvg(0, 3, 5))
     }
 }

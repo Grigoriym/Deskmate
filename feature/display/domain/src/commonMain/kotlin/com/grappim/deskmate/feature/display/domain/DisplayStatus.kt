@@ -5,7 +5,7 @@ package com.grappim.deskmate.feature.display.domain
  * Values are typed, not display text; the UI picks the words. Field meanings are in
  * `../esp32-desk-display/docs/API.md`.
  *
- * A `null` section means "no data yet". `bvg` is not here yet (M3.3).
+ * A `null` section means "no data yet".
  */
 data class DisplayStatus(
     val clock: Clock,
@@ -16,7 +16,8 @@ data class DisplayStatus(
     val co2: Co2?,
     val air: Air?,
     val warning: Warning,
-    val nextHoliday: NextHoliday?
+    val nextHoliday: NextHoliday?,
+    val bvg: Bvg?
 )
 
 sealed interface Clock {
@@ -148,3 +149,25 @@ enum class Severity {
 
 /** [date] is `"YYYY-MM-DD"`. [isToday] when it equals the display's own date. */
 data class NextHoliday(val name: String, val date: String, val isToday: Boolean)
+
+/**
+ * The departures that can still be caught on foot (`in_min` >= `walk_min`), soonest first. The
+ * panel hides the others, so they are dropped here too. [hint] is for the first one; it is `null`
+ * exactly when [departures] is empty (the panel shows `NO TRAINS` then).
+ */
+data class Bvg(val departures: List<Departure>, val hint: LeaveHint?)
+
+/** [time] is `"HH:MM"`, local; [inMin] is minutes from the display's `time`. */
+data class Departure(val line: String, val direction: String, val time: String, val inMin: Int)
+
+/** The panel's hint for the first catchable departure: `in_min - walk_comfort`, by sign. */
+sealed interface LeaveHint {
+    /** `LEAVE IN <minutes>`, [minutes] > 0. */
+    data class LeaveIn(val minutes: Int) : LeaveHint
+
+    /** `GO NOW` */
+    data object GoNow : LeaveHint
+
+    /** `HURRY`: past the relaxed walk, but still catchable. */
+    data object Hurry : LeaveHint
+}

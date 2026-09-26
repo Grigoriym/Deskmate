@@ -1,6 +1,6 @@
 # Deskmate checklist
 
-**Current step:** M3.3 — M3.2 done (domain model and mapper, all sections except `bvg`), 2026-09-26.
+**Current step:** M3.4 — M3.3 done (BVG in the domain model), 2026-09-26.
 
 ## How to use this
 
@@ -92,7 +92,7 @@ Shared context for all of M3 (re-verify, don't re-derive):
   `kotlinx-datetime`). The fixture moved to `core/api/src/commonTestFixture/`, compiled by both
   `core:api` and `feature:display:domain` tests (`srcDir` in both `build.gradle.kts`; one copy).
 
-- [ ] **M3.3** — BVG in the domain model. `bvg` `null` → no data. Otherwise the departures
+- [x] **M3.3** — BVG in the domain model. `bvg` `null` → no data. Otherwise the departures
   (line, direction, time, `in_min`), with the uncatchable ones (`in_min` < `walk_min`) marked
   or dropped as the panel does, and the hint for the first catchable one: `LEAVE IN
   <in_min - walk_comfort>` while positive, `GO NOW` at 0, `HURRY` below. An empty list and a
@@ -100,6 +100,9 @@ Shared context for all of M3 (re-verify, don't re-derive):
   **Verify:** tests for each hint case at its boundary (`in_min - walk_comfort` = 1, 0, -1),
   `in_min` = `walk_min` (catchable) and `walk_min - 1` (not), empty list, all uncatchable,
   `null`. `./gradlew build` green.
+  Note: uncatchable departures are dropped, as the panel does (`screens.c` `layout_bvg()`).
+  `Bvg.hint` is `null` exactly when no departure is left (empty or all uncatchable; the panel
+  shows `NO TRAINS`). The hint uses `in_min`; the panel uses its own clock, same meaning.
 
 - [ ] **M3.4** — Poll loop and commands, in `feature:display:ui` (`commonMain`; a `ViewModel`
   or a plain state holder, decide in the step and note why). One UI state `StateFlow`:

@@ -1,6 +1,7 @@
 package com.grappim.deskmate.feature.display.domain
 
 import com.grappim.deskmate.core.api.dto.AirDto
+import com.grappim.deskmate.core.api.dto.BvgDto
 import com.grappim.deskmate.core.api.dto.Co2Dto
 import com.grappim.deskmate.core.api.dto.IndoorDto
 import com.grappim.deskmate.core.api.dto.NextHolidayDto
@@ -26,7 +27,8 @@ fun StatusDto.toDisplayStatus(): DisplayStatus = DisplayStatus(
     co2 = co2?.toCo2(),
     air = air?.toAir(),
     warning = warning.toWarning(),
-    nextHoliday = nextHoliday?.toNextHoliday(today = date)
+    nextHoliday = nextHoliday?.toNextHoliday(today = date),
+    bvg = bvg?.toBvg()
 )
 
 private fun String.toScreen(): Screen = when (this) {
@@ -130,3 +132,17 @@ private fun String.toSeverity(): Severity = when (this) {
 }
 
 private fun NextHolidayDto.toNextHoliday(today: String) = NextHoliday(name = name, date = date, isToday = date == today)
+
+/** Same as the panel: drop what can't be caught, then the hint for the first that can. */
+private fun BvgDto.toBvg(): Bvg {
+    val catchable = departures
+        .filter { it.inMin >= walkMin }
+        .map { Departure(line = it.line, direction = it.direction, time = it.time, inMin = it.inMin) }
+    return Bvg(departures = catchable, hint = catchable.firstOrNull()?.let { leaveHint(it.inMin - walkComfort) })
+}
+
+private fun leaveHint(leaveIn: Int): LeaveHint = when {
+    leaveIn > 0 -> LeaveHint.LeaveIn(leaveIn)
+    leaveIn == 0 -> LeaveHint.GoNow
+    else -> LeaveHint.Hurry
+}
