@@ -17,3 +17,4 @@ entries get deleted — see /finalize.
 - 2026-09-26 — Two mutations in one test run showed only one failing test: `configureTests()` sets
   `failFast = true` (`build-logic/.../Quality.kt`), so the run stops at the first failure. One
   mutation per run.
+- 2026-09-26 — `adb -s <serial> logcat` after the phone disconnected: adb printed "waiting for device" and blocked until the 120 s timeout. Check `adb devices` first, or use `adb wait-for-device` with a `timeout`.
