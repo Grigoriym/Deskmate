@@ -17,6 +17,10 @@ technique lives in the skill itself, not here — this file is only what's true 
 ## App-specific gotchas
 
 - The emulator and `adb` need the Bash sandbox disabled.
+- The user's physical phone can be attached over USB at the same time. Always pass
+  `-s emulator-5554` to `adb`; a bare `adb` fails with "more than one device".
+- The screen text comes from Koin (`GreetingProvider`, M0.4). "Deskmate (via Koin)" means
+  the graph started; a crash at launch with a Koin error means it did not.
 - `local.properties` (`sdk.dir=/home/gregory/Android/Sdk`) is gitignored. A fresh clone
   needs it before any Android Gradle task configures.
 - No launcher icon yet: the app shows the default Android icon in the app drawer.

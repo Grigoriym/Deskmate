@@ -1,6 +1,6 @@
 # Deskmate checklist
 
-**Current step:** M0.4 — M0.3 done 2026-09-26 (six empty module skeletons, kit `coroutines` + `uikit` added).
+**Current step:** M0.6 — M0.4 done 2026-09-26 (Koin skeleton, `KoinGraphTest`); M0.5 was done early.
 
 ## How to use this
 
@@ -91,10 +91,21 @@ Ground rules (the *why* is in `docs/IMPLEMENTATION_PLAN.md`):
   **Verify:** `./gradlew build` green. Confirmed (all six modules ran detekt, ktlint, kover);
   `grappim-kit-coroutines:0.1.7` and `grappim-kit-uikit:0.1.7` are on the compile classpaths.
 
-- [ ] **M0.4** — Koin skeleton: `AppModule`, one injected dependency visible on the
+- [x] **M0.4** — Koin skeleton: `AppModule`, one injected dependency visible on the
   placeholder screen (proves the graph).
-  **Verify:** app launches on the emulator and shows the injected value; a Koin graph check
-  test passes.
+  **Note:** wayprint's shape (`composeApp/.../di/Koin.kt`: `AppModule` with `@ComponentScan`,
+  `@KoinApplication object KoinApp`; `DeskmateApp : Application` calls `startKoin<KoinApp>`),
+  minus wayprint's `expect class PlatformComponentModule`: Android is the only target and
+  nothing needs a platform binding yet. The injected value is `GreetingProvider.greeting()` =
+  "Deskmate (via Koin)". It differs from M0.2's hardcoded "Deskmate" on purpose, so the
+  screenshot shows the injection happened. Catalog gained `koin-test`.
+  **Note:** `KoinGraphTest` is in `composeApp/src/commonTest` (runs as `testAndroidHostTest`).
+  No `extraTypes` needed yet: no definition takes a `Context`. `verify()` is
+  `@KoinExperimentalAPI`, so the test compile prints one warning.
+  **Verify:** `./gradlew build` green; `KoinGraphTest` passes. Negative check: a temporary
+  `@Single class Broken(val missing: Missing)` made it fail with "Missing definition", then was
+  removed. On `Medium_Phone_API_36.1` the app shows "Deskmate (via Koin)" (screenshot +
+  `uiautomator dump`); no crash in logcat.
 
 - [x] **M0.5** — `CLAUDE.md`: merge `../agentic-grappim/templates/CLAUDE.md.template`
   (working agreements, close-out, settled decisions, reference projects) into the existing

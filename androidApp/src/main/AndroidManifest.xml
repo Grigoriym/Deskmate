@@ -6,6 +6,7 @@
 
     <!-- Cleartext for any host: the display is plain HTTP on a DHCP-assigned LAN IP. -->
     <application
+        android:name=".DeskmateApp"
         android:allowBackup="true"
         android:label="@string/app_name"
         android:supportsRtl="true"
