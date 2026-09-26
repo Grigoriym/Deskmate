@@ -104,6 +104,9 @@ first — it is often for a problem this toolchain doesn't have.
   report to a distinct path immediately. Overwrite the "before" once and the diff comes
   back showing nothing changed anywhere — which reads like a plausible result rather
   than a mistake.
+- **An A/B of a Gradle test forces the test to run** (`--rerun` on the test task). M2.4:
+  after a change to a Koin `includes` list, `testAndroidHostTest` came back `UP-TO-DATE`, and
+  "BUILD SUCCESSFUL" looked like a pass.
 
 ## Plain technical English
 
