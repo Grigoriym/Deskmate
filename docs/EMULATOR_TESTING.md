@@ -40,3 +40,6 @@ technique lives in the skill itself, not here — this file is only what's true 
 - To confirm `usesCleartextTraffic` in the built APK, read the manifest with
   `~/Android/Sdk/build-tools/<ver>/aapt2 dump xmltree --file AndroidManifest.xml <apk>`.
   `dumpsys package` does not print that flag.
+- The widget (M4.1): `dumpsys appwidget | grep -i deskmate` shows the provider is registered.
+  To place it: long-press the home screen, "Widgets", the "Browse" tab, expand "Deskmate",
+  tap the 2×1 preview, then the "Add Deskmate widget" button (`content-desc`). No drag needed.

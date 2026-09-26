@@ -38,6 +38,8 @@ turbine = "1.2.1"
 ktor = "3.5.2"
 # https://developer.android.com/jetpack/androidx/releases/datastore
 dataStore = "1.2.1"
+# https://developer.android.com/jetpack/androidx/releases/glance
+glance = "1.2.0"
 
 # https://github.com/InsertKoinIO/koin/releases
 koin-bom = "4.2.2"
@@ -100,6 +102,8 @@ ktor-client-mock = { module = "io.ktor:ktor-client-mock", version.ref = "ktor" }
 
 androidx-datastore-preferences = { module = "androidx.datastore:datastore-preferences", version.ref = "dataStore" }
 androidx-datastore-preferences-core = { module = "androidx.datastore:datastore-preferences-core", version.ref = "dataStore" }
+
+androidx-glance-appwidget = { module = "androidx.glance:glance-appwidget", version.ref = "glance" }
 
 koin-bom = { module = "io.insert-koin:koin-bom", version.ref = "koin-bom" }
 koin-core = { module = "io.insert-koin:koin-core" }

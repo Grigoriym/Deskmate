@@ -18,6 +18,8 @@ dependencies {
     implementation(project(":composeApp"))
     // `MainActivity` starts the search once the local network permission is answered.
     implementation(project(":core:discovery"))
+    // The home-screen widget: its receiver comes in through `widget`'s manifest.
+    implementation(project(":widget"))
 
     implementation(platform(libs.koin.bom))
     implementation(libs.koin.android)

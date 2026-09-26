@@ -1,6 +1,6 @@
 # Deskmate checklist
 
-**Current step:** M4.1 — M4 broken down 2026-09-26.
+**Current step:** M4.2 — M4.1 (empty widget) done 2026-09-26.
 
 ## How to use this
 
@@ -60,7 +60,7 @@ Shared context for all of M4 (re-verify, don't re-derive):
 - **Revisit entry this milestone owns:** the M3.6 skipped real-device checks (M4.6). Delete it
   in the step that runs them.
 
-- [ ] **M4.1** — Empty widget on the home screen. Add Glance (`glance-appwidget`, plus
+- [x] **M4.1** — Empty widget on the home screen. Add Glance (`glance-appwidget`, plus
   `glance-material3` only if used) and WorkManager (`work-runtime-ktx`) to the catalog, with
   `# https://…` release-page comments as the other keys have. `widget` gets an `androidMain`
   with a `GlanceAppWidget` that shows one static text, its `GlanceAppWidgetReceiver`, the
@@ -70,6 +70,11 @@ Shared context for all of M4 (re-verify, don't re-derive):
   `widget`'s `Placeholder.kt`. Dependency change: say so in the commit.
   **Verify:** `./gradlew build` green, `KoinGraphTest` passes. On the emulator: the widget is in
   the widget picker, places on the home screen and shows the static text (screenshot).
+  Note: Glance `1.2.0` only. WorkManager moved to M4.3: nothing used it yet (Glance brings
+  `work-runtime-ktx` 2.7.1 transitively anyway). `widget` applies `deskmate.kmp.library.compose`:
+  it gives the Compose compiler and turns on `androidResources`. So the manifest and the XML live in
+  `widget/src/androidMain/`, and the receiver merges into the app's manifest. The provider has
+  `updatePeriodMillis="0"`; `targetCell` 2×1.
 
 - [ ] **M4.2** — Widget snapshot and its store. A `WidgetSnapshot`: outdoor temp, indoor temp,
   next catchable departure (line, direction, `time`), fetch time. One pure mapping
@@ -82,7 +87,8 @@ Shared context for all of M4 (re-verify, don't re-derive):
   **Verify:** `commonTest`: the fixture maps to the expected snapshot; each `null` case above;
   the store round-trips a snapshot and returns `null` when empty. `./gradlew build` green.
 
-- [ ] **M4.3** — Background refresh. A plain `WidgetRefresher` (`commonMain`): if the locator
+- [ ] **M4.3** — Background refresh. Add WorkManager (`androidx.work:work-runtime`, latest
+  stable; a dependency change, say so in the commit). A plain `WidgetRefresher` (`commonMain`): if the locator
   is not `Found`, `locate()` first; then `status()`; on success, map and save the snapshot. On
   any failure keep the last snapshot; don't call `rediscover()` (the app's poll owns that, M3.4).
   A thin `CoroutineWorker` calls it, then updates the widget. Periodic unique work, 15 min,
